@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\ReplicatedStorage",
+    "\\src\\ReplicatedStorage\\Modules",
+    "\\src\\ServerScriptService",
+    "\\src\\ServerScriptService\\Main",
+    "\\src\\ServerScriptService\\Main\\Combat",
+    "\\src\\ServerScriptService\\Main\\Modules"
+  ],
+  "SelectedNode": "\\src\\ServerScriptService\\Main\\Modules\\Inventory.lua",
+  "PreviewInSolutionExplorer": false
+}
