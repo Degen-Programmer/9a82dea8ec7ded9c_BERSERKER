@@ -76,9 +76,13 @@ function Dash.Execute(kwargs : {}, ...)
     local ANimTrack : AnimationTrack =  Humanoid.Animator:LoadAnimation(Animations.FLIP)
     ANimTrack.Looped = false
     ANimTrack:Play()
-    
+
     RootPart.AssemblyLinearVelocity += (Additive_vector * UsableVelocity);
-    Dash.Replicate("Execute", {})
+    Dash.Replicate("Execute", {
+
+        Player = self.Player
+
+    })
 
 end
 

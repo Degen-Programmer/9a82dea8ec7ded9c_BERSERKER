@@ -23,7 +23,7 @@ function Dash.Execute(Kwargs : {})
 
     local Player : Player = Kwargs.Player;
     local Character = Player.Character;
-    local Humnaoid = Character.Humanoid
+    local Humanoid = Character.Humanoid
     local RootPart = Character.HumanoidRootPart;
 
     local self = {}
@@ -34,13 +34,17 @@ function Dash.Execute(Kwargs : {})
 
     -- // VFX:
 
-    EffectsUtil.Clone("Dash", "Lines", function(Lines : Part)
+    EffectsUtil.Clone("Dash", "SmokeCloud", function(SmokeCloud : Part)
         
-        Lines.CFrame = RootPart.CFrame * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0);
-        EffectsUtil._Emit(Lines)
+        SmokeCloud.CFrame = RootPart.CFrame * CFrame.new(0, -2, 0);
+        EffectsUtil._Emit(SmokeCloud)
 
-        self.Lines = Lines;
-        print("LINED IT UP!")
+        self.SmokeCloud = SmokeCloud;
+
+    end)
+
+    Humanoid:GetPropertyChangedSignal("FloorMaterial"):Connect(function(new_state : Enum.Material)
+        print("NEW MATERIAL!")
     end)
 end
 
