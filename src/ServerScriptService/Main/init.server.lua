@@ -170,7 +170,8 @@ mainCommunication:Connect(function(requester: Player, arguments: table)
 		dataObject:ExecuteM1()
 
 	elseif request == "Jump" then -- If request is "Jump".
-		--dataObject:ExecuteJump()
+	
+		dataObject:ExecuteJump()
 
 	elseif request == "Ability" then -- If request is "Ability".
 
