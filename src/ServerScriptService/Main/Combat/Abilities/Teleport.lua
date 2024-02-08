@@ -14,12 +14,13 @@ local TELEPORT_COOLDOWN = 5;
 -- // Packages:
 
 local Rep = game:GetService("ReplicatedStorage")
+local Ts = game:GetService("TweenService")
+
 local Packages = Rep.Packages
 local Assets = Rep.Assets
 local Animations = Assets.Animations;
 
 local Net = require(Packages.BridgeNet2);
-
 local ReplicationManager = Net.ReferenceBridge("ClientReplicator")
 local HUD = Net.ReferenceBridge("HUD")
 
@@ -76,7 +77,7 @@ function Teleport.Execute(kwargs : {}, ...)
 
     local Character : Model = self.Character;
     local Humanoid : Humanoid = Character.Humanoid;
-    local RootPart : Part = Character.HumanoidRootPart;
+    local RootPart : Part = Character.Torso;
 
     -- // Raycast to see the location of where to teleport the player:
 
@@ -88,14 +89,25 @@ function Teleport.Execute(kwargs : {}, ...)
     local worldRootRaycast : RaycastResult = workspace:Raycast(
 
         RootPart.CFrame.Position,
-        RootPart.Position * (RootPart.CFrame.LookVector * TELEPORT_DISTANCE),
+        RootPart.Position * (RootPart.Position + RootPart.CFrame.LookVector * TELEPORT_DISTANCE),
         raycast
 
     )
 
     if not worldRootRaycast then return end
+
     if worldRootRaycast.Instance then
-        print(worldRootRaycast.Instance)
+
+        print("UwU \n Hru")
+
+        local Position : CFrame = RootPart.CFrame * CFrame.new(RootPart.CFrame.LookVector * TELEPORT_DISTANCE)
+        Ts:Create(RootPart, TweenInfo.new(0.25), {CFrame = Position}):Play()
+
+    else
+
+        local Position : CFrame = RootPart.CFrame * CFrame.new(RootPart.CFrame.LookVector * TELEPORT_DISTANCE)
+        Ts:Create(RootPart, TweenInfo.new(0.25), {CFrame = Position}):Play()
+
     end
 end
 
