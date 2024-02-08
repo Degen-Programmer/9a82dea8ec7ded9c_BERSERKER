@@ -35,7 +35,13 @@ uIS.InputBegan:Connect(function(i: InputObject, gpe: boolean) -- Uis input monit
 
 		--	[[ Input for single/double jump. ]]
 		elseif i.KeyCode == Enum.KeyCode.Z then
+
 			main:Fire( {Request = "LockOn", Arguments = {}} )
+			
+		elseif i.KeyCode == Enum.KeyCode.Space then
+
+			main:Fire( {Request = "Jump", Arguments = {}} )
+			
 		end
 	end
 end)

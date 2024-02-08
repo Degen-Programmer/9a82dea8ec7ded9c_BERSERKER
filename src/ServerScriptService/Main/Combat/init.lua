@@ -57,12 +57,13 @@ function Combat.Construct(player: Player, Data: table)
 		Player = player, 
 		Character = player.Character, 
 		Debounce = false, 
-		CurrentAbility = Data.Ability; 
+		CurrentAbility = "Dash"; 
 		AbilityDebounce = false; 
 		OnHit = Signal.new(), 
 		_Hitbox = Hitbox.Initialize(player.Character), 
 		Queue = QMT, 
 		Data = Data, 
+		JumpDebounce = false;
 		Jumps = 0, 
 		Cooldown = 1.5; 
 		AbilitiesDisabled = false; 
@@ -395,10 +396,17 @@ function Combat:HitDetection()
  
 							if Detection:GetAttribute("Active") == false then 
  
-								local result = "Hit"; 
+								--[[local result = "Hit"; 
 
 								player_combat_data:GotHit(self) 
 								self:HitConnected(player_combat_data.Player.Name)
+
+								return player_combat_data.Player, result]]
+
+								local result = "Parried"; 
+
+								self:Parry()
+								player_combat_data:Parry()
 
 								return player_combat_data.Player, result
 
@@ -489,6 +497,49 @@ function Combat:Reset()
 
 	})
 
+end
+
+function Combat:ExecuteJump()
+
+	self.Jumps += 1;
+	print(self.Jumps)
+
+	local Humanoid : Humanoid = self.Character.Humanoid
+
+	if Humanoid:GetState() == Enum.HumanoidStateType.Jumping or Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+		if self.JumpDebounce == false and self.Jumps == 2 then
+
+			print("Can Jump")
+
+			self.Character.HumanoidRootPart.AssemblyLinearVelocity += Vector3.new(0, 50, 0)
+
+		end
+	end
+
+	self.statecall = Humanoid.StateChanged:Connect(function(old, new)
+		if new == Enum.HumanoidStateType.Landed or new == Enum.HumanoidStateType.Running then
+			print("Reset")
+
+			self.Jumps = 0;
+			self.JumpDebounce = true
+
+			task.wait(0.75)
+
+			self.JumpDebounce = false;
+			self.statecall:Disconnect()
+
+		end
+	end)
+
+	task.delay(0.75, function()
+		if self.statecall then
+
+			self.statecall:Disconnect()
+			self.JumpDebounce = false;
+			self.Jumps = 0;
+
+		end
+	end)
 end
 
 local Replication = require(script.Replication)
@@ -601,13 +652,18 @@ function Combat:ExecuteAbility()
 
 	if self.Character.Humanoid.Health == 0 then return end
 
-	if RoundManager.CurrentRound.RoundState == "Active" then 
+	--[[if RoundManager.CurrentRound.RoundState == "Active" then 
 		Abilities.Execute({ 
 			_self = self 
 		}) -- kwargs 
 	else 
 		print("Round be kinda inactive ngl.") 
-	end
+	end]]
+
+	Abilities.Execute({ 
+		_self = self 
+	}) 
+
 end
 
 return Combat

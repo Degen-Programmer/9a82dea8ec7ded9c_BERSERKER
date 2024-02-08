@@ -7,10 +7,10 @@ function module.Execute(kwargs)
     local self = kwargs._self;
     local Ability = self.CurrentAbility;
     local mod = require(script:FindFirstChild(Ability))
+    
+    mod.Execute(kwargs)
 
-    print(mod)
-
-    if self.AbilityDebounce == false and self.AbilitiesDisabled == false then
+    --[[if self.AbilityDebounce == false and self.AbilitiesDisabled == false then
 
         self.AbilityDebounce = true;
         
@@ -26,7 +26,7 @@ function module.Execute(kwargs)
 
         QSignals.AbilityUseAchieved:Fire(self.Player, {Signal = "AbilityUseAchieved"});
         
-    end
+    end]]
 end
 
 return module 
