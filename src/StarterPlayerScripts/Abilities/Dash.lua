@@ -26,10 +26,22 @@ function Dash.Execute(Kwargs : {})
     local Humnaoid = Character.Humanoid
     local RootPart = Character.HumanoidRootPart;
 
+    local self = {}
+
     -- // SFX:
 
+
+
     -- // VFX:
-    
+
+    EffectsUtil.Clone("Dash", "Lines", function(Lines : Part)
+        
+        Lines.CFrame = RootPart.CFrame * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0);
+        EffectsUtil._Emit(Lines)
+
+        self.Lines = Lines;
+        print("LINED IT UP!")
+    end)
 end
 
 function Dash.CameraAnimation()
