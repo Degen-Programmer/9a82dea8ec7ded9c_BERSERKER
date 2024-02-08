@@ -2,6 +2,7 @@ local Dash = {}
 
 local TweenService = game:GetService("TweenService")
 local AssetService = game:GetService("AssetService")
+local HTTP = game:GetService("HttpService")
 
 local rep = game:GetService("ReplicatedStorage")
 
@@ -17,7 +18,7 @@ local Assets = rep.Assets;
 local DashAssets = Assets.FX.Dash
 
 function Dash.Cleanup(self)
-    for _, v in ipairs(self) do
+    for k, v in pairs(self) do
         v:Destroy()
         print("Destroyed : "..v.Name)
     end
@@ -29,7 +30,9 @@ function Dash.CreateSmokeCloud(RootPart, self)
         SmokeCloud.CFrame = RootPart.CFrame * CFrame.new(0, -2, 0);
         EffectsUtil._Emit(SmokeCloud)
 
-        self.SmokeCloud = SmokeCloud;
+        local UUID = HTTP:GenerateGUID(false)
+
+        self[UUID] = SmokeCloud;
 
         return SmokeCloud
 
