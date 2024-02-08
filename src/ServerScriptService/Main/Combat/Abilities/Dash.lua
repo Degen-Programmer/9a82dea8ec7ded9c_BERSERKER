@@ -8,8 +8,6 @@ local Dash = {}
 
 -- // Configs:
 
-local DASH_DURATION = 0.3;
-local DASH_DISTANCE = 15;
 local DASH_VELOCITY = 200
 
 -- // Packages:
@@ -28,11 +26,19 @@ function Dash.Cleanup()
     
 end
 
-function Dash.Cooldown()
-    
+-- // Function that fires only to the executor, Indicating that their cooldown as begun.
+
+function Dash.Cooldown(Player : Player)
+    HUD:Fire(Net.Players{Player}, {
+
+        Element = "Ability";
+        Action = "Cooldown";
+        Arguments = {Player = Player}
+
+    })
 end
 
--- // Main Function that executes the ability:
+-- // Function that replicates the ability to all clients and loads VFX/SFX/Camera Anims and stuff.:
 
 function Dash.Replicate(Action : string, Arguments : {})
     ReplicationManager:Fire(Net.AllPlayers(), {
@@ -40,6 +46,18 @@ function Dash.Replicate(Action : string, Arguments : {})
         Request = "Dash";
         Action = Action;
         Arguments = Arguments;
+
+    })
+end
+
+-- // Function that fires only to the executor, playing some camrea animation on their screen.
+
+function Dash.CameraAnimation(Player : Player)
+    ReplicationManager:Fire(Net.Players({Player}), {
+
+        Request = "Dash";
+        Action = "CameraAnimation";
+        Arguments = {Player = Player};
 
     })
 end
