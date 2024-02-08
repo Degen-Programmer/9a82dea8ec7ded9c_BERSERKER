@@ -43,7 +43,7 @@ function Dash.Execute(Kwargs : {})
 
     -- // SFX:
 
-    
+
 
     -- // VFX:
 
@@ -55,7 +55,16 @@ function Dash.Execute(Kwargs : {})
 end
 
 function Dash.CameraAnimation()
-    
+
+    local PhaseIn = {Time = 0.25, FieldOfView = 65}
+    local PhaseOut = {Time = 0.25, FieldOfView = 70}
+
+    CameraUtil.ChangeFOV(PhaseIn)
+
+    task.wait(0.25)
+
+    CameraUtil.ChangeFOV(PhaseOut)
+
 end
 
 return Dash

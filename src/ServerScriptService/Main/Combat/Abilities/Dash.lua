@@ -9,6 +9,7 @@ local Dash = {}
 -- // Configs:
 
 local DASH_VELOCITY = 200
+local DASH_COOLDOWN = 5;
 
 -- // Packages:
 
@@ -33,7 +34,7 @@ function Dash.Cooldown(Player : Player)
 
         Element = "Ability";
         Action = "Cooldown";
-        Arguments = {Player = Player}
+        Arguments = {Player = Player, Duration = DASH_COOLDOWN}
 
     })
 end
@@ -91,11 +92,18 @@ function Dash.Execute(kwargs : {}, ...)
         UsableVelocity = DASH_VELOCITY;
     end
 
+    -- Load Animation:
+
     local ANimTrack : AnimationTrack =  Humanoid.Animator:LoadAnimation(Animations.FLIP)
     ANimTrack.Looped = false
     ANimTrack:Play()
 
     RootPart.AssemblyLinearVelocity += (Additive_vector * UsableVelocity);
+
+    -- Load Cooldowm, Camera Effects and VFX.
+
+    Dash.CameraAnimation(self.Player)
+    Dash.Cooldown(self.Player)
     Dash.Replicate("Execute", {
 
         Player = self.Player

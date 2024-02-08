@@ -9,17 +9,17 @@ local current_camera = workspace.CurrentCamera;
 local character = player.Character;
 local humanoid = character.Humanoid;
 
-function camera.ChangeFOV(_CAM: Camera, Properties: {})
+function camera.ChangeFOV(Properties: {})
     task.spawn(function()
-        local _tween = Tweenserivce:Create(_CAM, TweenInfo.new(Properties.Time), {FieldOfView = Properties.FieldOfView})
+        local _tween = Tweenserivce:Create(current_camera, TweenInfo.new(Properties.Time), {FieldOfView = Properties.FieldOfView})
         _tween:Play()
     end)
 end
 
-function camera.ShakeSustained(camera, preset: string, duration : number)
+function camera.ShakeSustained(preset: string, duration : number)
     
     local shaker = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCFrame)
-        camera.CFrame = camera.CFrame * shakeCFrame
+        current_camera.CFrame = current_camera.CFrame * shakeCFrame
     end)
 
     shaker:Start()
