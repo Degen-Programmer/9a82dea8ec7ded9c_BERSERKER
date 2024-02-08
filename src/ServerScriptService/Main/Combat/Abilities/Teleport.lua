@@ -8,7 +8,7 @@ local Teleport = {}
 
 -- // Configs:
 
-local TELEPORT_DISTANCE = 200
+local TELEPORT_DISTANCE = 20
 local TELEPORT_COOLDOWN = 5;
 
 -- // Packages:
@@ -31,7 +31,7 @@ end
 
 function Teleport.Cooldown(Player : Player, self)
 
-    task.delay(Teleport_COOLDOWN, function()
+    task.delay(TELEPORT_COOLDOWN, function()
         self.AbilitiesDebounce = false;
     end)
 
@@ -39,7 +39,7 @@ function Teleport.Cooldown(Player : Player, self)
 
         Element = "Ability";
         Action = "Cooldown";
-        Arguments = {Player = Player, Duration = Teleport_COOLDOWN}
+        Arguments = {Player = Player, Duration = TELEPORT_COOLDOWN}
 
     })
 end
@@ -72,12 +72,31 @@ end
 
 function Teleport.Execute(kwargs : {}, ...)
     
-    local self = kwargs._self
+    local self = kwargs._self;
 
-    local Character : Model = self.Character
+    local Character : Model = self.Character;
     local Humanoid : Humanoid = Character.Humanoid;
     local RootPart : Part = Character.HumanoidRootPart;
 
+    -- // Raycast to see the location of where to teleport the player:
+
+    local raycast = RaycastParams.new()
+    raycast.FilterDescendantsInstances = {Character}
+    raycast.FilterType = Enum.RaycastFilterType.Exclude
+    raycast.IgnoreWater = true;
+
+    local worldRootRaycast : RaycastResult = workspace:Raycast(
+
+        RootPart.CFrame.Position,
+        RootPart.Position * (RootPart.CFrame.LookVector * TELEPORT_DISTANCE),
+        raycast
+
+    )
+
+    if not worldRootRaycast then return end
+    if worldRootRaycast.Instance then
+        print(worldRootRaycast.Instance)
+    end
 end
 
 return Teleport

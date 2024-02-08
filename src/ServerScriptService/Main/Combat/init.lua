@@ -57,7 +57,7 @@ function Combat.Construct(player: Player, Data: table)
 		Player = player, 
 		Character = player.Character, 
 		Debounce = false, 
-		CurrentAbility = "Dash"; 
+		CurrentAbility = "Teleport"; 
 		AbilityDebounce = false; 
 		OnHit = Signal.new(), 
 		_Hitbox = Hitbox.Initialize(player.Character), 
