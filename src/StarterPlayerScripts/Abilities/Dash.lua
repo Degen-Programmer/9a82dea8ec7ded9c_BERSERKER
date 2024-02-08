@@ -19,6 +19,19 @@ function Dash.Cleanup(self)
     
 end
 
+function Dash.CreateSmokeCloud(RootPart, self)
+    EffectsUtil.Clone("Dash", "SmokeCloud", function(SmokeCloud : Part)
+        
+        SmokeCloud.CFrame = RootPart.CFrame * CFrame.new(0, -2, 0);
+        EffectsUtil._Emit(SmokeCloud)
+
+        self.SmokeCloud = SmokeCloud;
+
+        return SmokeCloud
+
+    end)
+end
+
 function Dash.Execute(Kwargs : {})
 
     local Player : Player = Kwargs.Player;
@@ -34,17 +47,10 @@ function Dash.Execute(Kwargs : {})
 
     -- // VFX:
 
-    EffectsUtil.Clone("Dash", "SmokeCloud", function(SmokeCloud : Part)
-        
-        SmokeCloud.CFrame = RootPart.CFrame * CFrame.new(0, -2, 0);
-        EffectsUtil._Emit(SmokeCloud)
+    Dash.CreateSmokeCloud(RootPart, self)
 
-        self.SmokeCloud = SmokeCloud;
-
-    end)
-
-    Humanoid:GetPropertyChangedSignal("FloorMaterial"):Connect(function(new_state : Enum.Material)
-        print("NEW MATERIAL!")
+    task.delay(0.45, function()
+        Dash.CreateSmokeCloud(RootPart, self)
     end)
 end
 
