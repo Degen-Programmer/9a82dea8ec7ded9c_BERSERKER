@@ -8,7 +8,8 @@ local Dash = {}
 
 -- // Configs:
 
-local DASH_VELOCITY = 200
+local DASH_VELOCITY_GROUND = 200
+local DASH_VELOCITY_AIR = 75;
 local DASH_COOLDOWN = 5;
 
 -- // Packages:
@@ -29,7 +30,12 @@ end
 
 -- // Function that fires only to the executor, Indicating that their cooldown as begun.
 
-function Dash.Cooldown(Player : Player)
+function Dash.Cooldown(Player : Player, self)
+
+    task.delay(DASH_COOLDOWN, function()
+        self.AbilitiesDebounce = false;
+    end)
+
     HUD:Fire(Net.Players{Player}, {
 
         Element = "Ability";
@@ -87,9 +93,9 @@ function Dash.Execute(kwargs : {}, ...)
     -- Check to see if the player is jumping or na
 
     if Humanoid.FloorMaterial == Enum.Material.Air then
-        UsableVelocity = 100;
+        UsableVelocity = DASH_VELOCITY_AIR;
     else
-        UsableVelocity = DASH_VELOCITY;
+        UsableVelocity = DASH_VELOCITY_GROUND;
     end
 
     -- Load Animation:
@@ -103,7 +109,7 @@ function Dash.Execute(kwargs : {}, ...)
     -- Load Cooldowm, Camera Effects and VFX.
 
     Dash.CameraAnimation(self.Player)
-    Dash.Cooldown(self.Player)
+    Dash.Cooldown(self.Player, self)
     Dash.Replicate("Execute", {
 
         Player = self.Player

@@ -14,9 +14,13 @@ local CameraUtil, EffectsUtil = require(utils_folder.Camera), require(utils_fold
 
 local Modules = rep.Modules
 local Assets = rep.Assets;
+local DashAssets = Assets.FX.Dash
 
 function Dash.Cleanup(self)
-    
+    for _, v in ipairs(self) do
+        v:Destroy()
+        print("Destroyed : "..v.Name)
+    end
 end
 
 function Dash.CreateSmokeCloud(RootPart, self)
@@ -43,7 +47,11 @@ function Dash.Execute(Kwargs : {})
 
     -- // SFX:
 
+    local DashSound : Sound = DashAssets.SFX:Clone()
+    DashSound.Parent = RootPart
+    DashSound:Play();
 
+    self.DashSound = DashSound
 
     -- // VFX:
 
@@ -51,6 +59,10 @@ function Dash.Execute(Kwargs : {})
 
     task.delay(0.45, function()
         Dash.CreateSmokeCloud(RootPart, self)
+    end)
+
+    task.delay(0.9, function()
+        Dash.Cleanup(self)
     end)
 end
 
