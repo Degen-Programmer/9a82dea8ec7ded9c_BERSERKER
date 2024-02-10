@@ -16,10 +16,10 @@ function camera.ChangeFOV(_CAM: Camera, Properties: {})
     end)
 end
 
-function camera.ShakeSustained(camera, preset: string, duration : number)
+function camera.ShakeSustained(preset: string, duration : number)
     
     local shaker = CameraShaker.new(Enum.RenderPriority.Camera.Value, function(shakeCFrame)
-        camera.CFrame = camera.CFrame * shakeCFrame
+        current_camera.CFrame = current_camera.CFrame * shakeCFrame
     end)
 
     shaker:Start()
