@@ -232,6 +232,9 @@ function Spinwheel:Deploy()
 		
 		self:_cancel_runner_thread()
 		self._GUI.Visible = false;
+		
+		local plrHud = require(script.Parent.PlayerHUD).HUD
+		plrHud:Unhide()
 
 	end)
 
