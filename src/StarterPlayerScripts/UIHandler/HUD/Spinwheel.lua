@@ -159,6 +159,9 @@ end
 function Spinwheel:SpinAnimation(Index)
 	
 	local Base3dOBject : Part = self._element;
+	local Base2dRotation = self.INDEXES[Index.Index].Base2D_Rotation
+
+	print(Base2dRotation)
 
 	for _, v in ipairs(Base3dOBject.Spinning:GetChildren()) do
 		v.Enabled = true;
@@ -167,12 +170,14 @@ function Spinwheel:SpinAnimation(Index)
 	camFX.ShakeSustained("Vibration", 4.5)
 
 	self._element.Size = Vector3.new(0, 0, 0)
+	self._element._OFFSET.Value = CFrame.new(-0.012, 0.057, -1.13) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
+
 	self._GUI.Wheel.Visible = true
 	self._GUI.Wheel.Rotation = 0;
 
 	Tweenservice:Create(self._GUI.Wheel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, 0), {Size = UDim2.new(1.2, 0, 1.2, 0)}):Play()
 	
-	local MainTween = Tweenservice:Create(self._GUI.Wheel, TweenInfo.new(5), {Rotation = 3600 * 2})
+	local MainTween = Tweenservice:Create(self._GUI.Wheel, TweenInfo.new(5), {Rotation = 3600 + Base2dRotation})
 	MainTween:Play()
 
 	task.delay(4, function()
@@ -191,6 +196,7 @@ function Spinwheel:SpinAnimation(Index)
 
 		self._GUI.Wheel.Visible = false;
 		self._element.Size = Vector3.new(1, 1, 0)
+		self._element._OFFSET.Value *= CFrame.fromEulerAnglesXYZ(0, 0, math.rad(Base2dRotation))
 
 	end)
 end
