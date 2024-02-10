@@ -140,14 +140,7 @@ function Spinwheel.RewardItem(plr, Container, Item, Count)
 end
 
 function Spinwheel.RewardCurrency(Data, Count)
-    
-    print(Data)
-
     Data.Currency += Count;
-
-    print(Data)
-    print("Currency rewarded.")
-
 end
 
 function Spinwheel.ProcessRequest(player : Player, Kwargs)
@@ -180,6 +173,10 @@ function Spinwheel.ProcessRequest(player : Player, Kwargs)
         Spinwheel.RewardCurrency(player_data, Reward)
 
     end
+
+    task.delay(5, function()
+        Spinwheel.Sessions[player.UserId] = nil;
+    end)
 
 end
 
