@@ -1,3 +1,3 @@
---[[local rounds = require(script.Parent.Main.Rounds)
+local rounds = require(script.Parent.Main.Rounds)
 local newROund = rounds.New()
-newROund:StartVoting()]]
+newROund:StartVoting()
