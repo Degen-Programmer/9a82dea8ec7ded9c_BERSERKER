@@ -7,8 +7,6 @@ type GACHA = {
     ---------------------------------------------------
 
     _name : string;
-    _element : Part;
-
     _GUI : {
 
         Container : {

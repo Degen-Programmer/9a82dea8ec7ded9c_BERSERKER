@@ -156,6 +156,14 @@ function HUD:Parry()
 
 end
 
+function HUD:Hide()
+
+	TweenService:Create(self.Elements.M1._element._OFFSET, TweenInfo.new(0.25), {Value = CFrame.new(-0.8, -1.3, -1.15) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)}):Play()
+	TweenService:Create(self.Elements.Ability._element._OFFSET, TweenInfo.new(0.25), {Value = CFrame.new(0.8, -1.3, -1.15) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)}):Play()
+	TweenService:Create(self.Elements.Stamina._element._OFFSET, TweenInfo.new(0.25), {Value = CFrame.new(0, -1.3, -1.15) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)}):Play()
+
+end
+
 function HUD:CleanupEliminations()
 	self.Elements.Eliminations:Cleanup();
 end
