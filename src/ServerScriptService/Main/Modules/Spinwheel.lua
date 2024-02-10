@@ -170,7 +170,7 @@ function Spinwheel.ProcessRequest(player : Player, Kwargs)
 
             player, 
             Configs.Container,
-            Item,
+            Reward,
             Configs.Count
 
         )
