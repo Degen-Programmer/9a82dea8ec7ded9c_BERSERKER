@@ -96,6 +96,7 @@ function Spinwheel.New()
 	self._runnerThread = nil;
 	self._offset = self._element._OFFSET.Value;
 	self._GUI = SCREENGUI
+	self._isSpinning = false;
 
 	return setmetatable(self, Spinwheel)
 	
@@ -160,11 +161,11 @@ function Spinwheel:SetAdornee()
 end
 
 function Spinwheel:SpinAnimation(Index)
+
+	self._isSpinning = true;
 	
 	local Base3dOBject : Part = self._element;
 	local Base2dRotation = self.INDEXES[Index.Index].Base2D_Rotation
-
-	print(Base2dRotation)
 
 	for _, v in ipairs(Base3dOBject.Spinning:GetChildren()) do
 		v.Enabled = true;
@@ -177,8 +178,9 @@ function Spinwheel:SpinAnimation(Index)
 
 	self._GUI.Wheel.Visible = true
 	self._GUI.Wheel.Rotation = 0;
+	self._GUI.Wheel.Size = UDim2.new(1, 0, 1, 0)
 
-	Tweenservice:Create(self._GUI.Wheel, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, 0), {Size = UDim2.new(1.2, 0, 1.2, 0)}):Play()
+	Tweenservice:Create(self._GUI.Wheel, TweenInfo.new(5, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, 0), {Size = UDim2.new(1, 0, 1, 0)}):Play()
 	
 	local MainTween = Tweenservice:Create(self._GUI.Wheel, TweenInfo.new(5), {Rotation = 3600 + Base2dRotation})
 	MainTween:Play()
@@ -197,8 +199,12 @@ function Spinwheel:SpinAnimation(Index)
 
 	MainTween.Completed:Connect(function(playbackState)
 
+		self._isSpinning = false;
+
 		self._GUI.Wheel.Visible = false;
 		self._element.Size = Vector3.new(1, 1, 0)
+		
+		Tweenservice:Create(self._element, TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, true, 0), {Size = Vector3.new(1.2, 1.2, 0)}):Play()
 		self._element._OFFSET.Value *= CFrame.fromEulerAnglesXYZ(0, 0, math.rad(Base2dRotation))
 
 	end)
@@ -230,6 +236,8 @@ function Spinwheel:Deploy()
 
 	self._GUI.Close.Activated:Connect(function(inputObject, clickCount)
 		
+		if self._isSpinning == true then return end
+
 		self:_cancel_runner_thread()
 		self._GUI.Visible = false;
 		
