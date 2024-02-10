@@ -4,7 +4,7 @@ local Spinwheel = {}
 Spinwheel.Sessions = {}
 Spinwheel.Chances = {
 
-    ["1000 Coins"] = {
+--[[    ["1000 Coins"] = {
 
         Chance = 10;
         RewardType = "Currency";
@@ -44,7 +44,7 @@ Spinwheel.Chances = {
         RewardType = "Currency";
         Reward = 1;
 
-    };
+    };]]
 
     ["Other Sword"] = {
 
