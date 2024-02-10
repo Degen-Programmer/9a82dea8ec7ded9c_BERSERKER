@@ -1,3 +1,4 @@
+local ContentProvider = game:GetService("ContentProvider")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Spinwheel = {}
 Spinwheel.Sessions = {}
@@ -25,6 +26,7 @@ Spinwheel.Chances = {
         RewardType = "Item";
         Reward = "WoodenSword";
         Container = "Weapons";
+        Count = 1;
 
     };
 
@@ -49,7 +51,8 @@ Spinwheel.Chances = {
         Chance = 20;
         RewardType = "Item";
         Reward = "Endsword";
-        Container = "Weapons"
+        Container = "Weapons";
+        Count = 1;
 
     };
 
@@ -59,6 +62,7 @@ Spinwheel.Chances = {
         RewardType = "Item";
         Reward = "CorpsePiler";
         Container = "Auras";
+        Count = 1;
 
     };
 
@@ -68,6 +72,7 @@ Spinwheel.Chances = {
         RewardType = "Item";
         Reward = "Dash";
         Container = "Abilities";
+        Count = 1;
 
     };
 }
@@ -120,6 +125,31 @@ function Spinwheel.ReplicateResult(plr : Player, Result : string)
     })
 end
 
+function Spinwheel.RewardItem(plr, Container, Item, Count)
+    
+    inventory.AddItem(plr, {
+
+        ItemCount = Count;
+        Container = Container;
+        Item = Item
+
+    })
+
+    print("Item rewarded.")
+
+end
+
+function Spinwheel.RewardCurrency(Data, Count)
+    
+    print(Data)
+
+    Data.Currency += Count;
+
+    print(Data)
+    print("Currency rewarded.")
+
+end
+
 function Spinwheel.ProcessRequest(player : Player, Kwargs)
     
     if Spinwheel.Sessions[player.UserId] then return end
@@ -131,7 +161,25 @@ function Spinwheel.ProcessRequest(player : Player, Kwargs)
     local Item = Spinwheel.ChooseItem()
     Spinwheel.ReplicateResult(player, Item)
 
-    
+    local Configs = Spinwheel.Chances[Item]
+    local RewardType = Configs.RewardType
+    local Reward = Configs.Reward
+
+    if RewardType == "Item" then
+        Spinwheel.RewardItem(
+
+            player, 
+            Configs.Container,
+            Item,
+            Configs.Count
+
+        )
+
+    elseif RewardType == "Currency" then
+
+        Spinwheel.RewardCurrency(player_data, Reward)
+
+    end
 
 end
 
