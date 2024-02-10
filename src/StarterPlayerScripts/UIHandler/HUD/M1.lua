@@ -50,11 +50,12 @@ function M1:Deploy()
 	newElement.Parent = workspace;
 	
 	self._element = newElement;
+	local OFFSET = self._element._OFFSET.Value;
 	
 	self._runnerThread = task.spawn(function()
 		game:GetService("RunService").RenderStepped:Connect(function()
 			
-			self._element.CFrame = Camera.CFrame * M1._OFFSET
+			self._element.CFrame = Camera.CFrame * self._element._OFFSET.Value
 			
 		end)
 	end)
