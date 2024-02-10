@@ -106,6 +106,8 @@ function Spinwheel:_init_runner_thread()
 	local bounds = Vector2.new(-0.5, 0.5)
 	local initialoffset = self._offset;
 
+	self:SetAdornee()
+
 	self._runnerThread = task.spawn(function()
 		game:GetService("RunService").RenderStepped:Connect(function()
 
@@ -128,6 +130,7 @@ end
 
 function Spinwheel:_cancel_runner_thread()
 	task.cancel(self._runnerThread)
+	Playergui.Spinwheel.Adornee = nil;
 end
 
 function Spinwheel:Parse(Action, Arguments)
@@ -225,6 +228,16 @@ function Spinwheel:Deploy()
 		})
 	end)
 
+	self._GUI.Close.Activated:Connect(function(inputObject, clickCount)
+		
+		self:_cancel_runner_thread()
+		self._GUI.Visible = false;
+
+	end)
+
+	self._GUI.Actions.Buy.Activated:Connect(function(inputObject, clickCount)
+		self._GUI.SpinShop.Visible = true;
+	end)
 end
 
 return Spinwheel
