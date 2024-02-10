@@ -9,9 +9,9 @@ local current_camera = workspace.CurrentCamera;
 local character = player.Character;
 local humanoid = character.Humanoid;
 
-function camera.ChangeFOV(_CAM: Camera, Properties: {})
+function camera.ChangeFOV(Properties: {})
     task.spawn(function()
-        local _tween = Tweenserivce:Create(_CAM, TweenInfo.new(Properties.Time), {FieldOfView = Properties.FieldOfView})
+        local _tween = Tweenserivce:Create(current_camera, TweenInfo.new(Properties.Time), {FieldOfView = Properties.FieldOfView})
         _tween:Play()
     end)
 end
