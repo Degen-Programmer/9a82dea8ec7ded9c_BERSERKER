@@ -32,10 +32,11 @@ function Inventory.AddItem(Player : Player, Kwargs : {})
     if ItemStack then
         ItemStack = ItemStack + Kwargs.ItemCount;
     elseif not ItemStack then
+        print("Entry created")
         ItemContainer[Kwargs.Item] = Kwargs.ItemCount;
     end
 
-    print(ItemStack)
+    print(ItemStack,  ItemContainer[Kwargs.Item])
 
     HUD:Fire(net.Players({Player}), {
 
