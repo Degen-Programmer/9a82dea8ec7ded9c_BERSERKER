@@ -21,7 +21,7 @@ Inventory.__index = Inventory;
 Inventory._BASEPART = game.ReplicatedStorage.UI.Inventory;
 
 local Playergui = game.Players.LocalPlayer.PlayerGui
-local INVENTORY_FRAME = Playergui.Inventory;
+local INVENTORY_FRAME = Playergui:WaitForChild("Inventory");
 
 local Camera : Camera? = workspace.CurrentCamera;
 local Tweenservice = game:GetService("TweenService");
