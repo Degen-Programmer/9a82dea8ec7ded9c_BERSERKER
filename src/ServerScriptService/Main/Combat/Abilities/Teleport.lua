@@ -77,7 +77,7 @@ function Teleport.Execute(kwargs : {}, ...)
 
     local Character : Model = self.Character;
     local Humanoid : Humanoid = Character.Humanoid;
-    local RootPart : Part = Character.Torso;
+    local RootPart : Part = Character.HumanoidRootPart;
 
     -- // Raycast to see the location of where to teleport the player:
 
@@ -89,7 +89,7 @@ function Teleport.Execute(kwargs : {}, ...)
     local worldRootRaycast : RaycastResult = workspace:Raycast(
 
         RootPart.CFrame.Position,
-        RootPart.Position * (RootPart.Position + RootPart.CFrame.LookVector * TELEPORT_DISTANCE),
+        RootPart.Position * (RootPart.CFrame.LookVector * TELEPORT_DISTANCE),
         raycast
 
     )
@@ -97,8 +97,6 @@ function Teleport.Execute(kwargs : {}, ...)
     if not worldRootRaycast then return end
 
     if worldRootRaycast.Instance then
-
-        print("UwU \n Hru")
 
         local Position : CFrame = RootPart.CFrame * CFrame.new(RootPart.CFrame.LookVector * TELEPORT_DISTANCE)
         Ts:Create(RootPart, TweenInfo.new(0.25), {CFrame = Position}):Play()
