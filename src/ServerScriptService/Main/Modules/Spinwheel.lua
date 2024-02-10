@@ -79,7 +79,7 @@ local inventory = require(script.Parent.Inventory);
 local GachaSignals = require(game.ServerScriptService.Main.Modules.Products.Signals)
 local MY_FUCKING_ROBUX = require(script.Parent.Products);
 
-local ClientCommunication = net.ReferenceBridge("ClientCommunication");
+local ClientCommunication = net.ReferenceBridge("HUD");
 
 function Spinwheel.ChooseItem()
     
@@ -108,6 +108,18 @@ function Spinwheel.ChooseItem()
 
 end
 
+function Spinwheel.ReplicateResult(plr : Player, Result : string)
+    ClientCommunication:Fire(net.Players({plr}), {
+
+        Element = "Spinwheel";
+        Action = "Spin";
+        Arguments = {
+            Index = Result;
+        }
+
+    })
+end
+
 function Spinwheel.ProcessRequest(player : Player, Kwargs)
     
     if Spinwheel.Sessions[player.UserId] then return end
@@ -116,7 +128,10 @@ function Spinwheel.ProcessRequest(player : Player, Kwargs)
     local player_data = dataMain:Get(player).Data;
     if player_data.Spins == 0 then return end
 
-    print("Can spin", Spinwheel.ChooseItem())
+    local Item = Spinwheel.ChooseItem()
+    Spinwheel.ReplicateResult(player, Item)
+
+    
 
 end
 
