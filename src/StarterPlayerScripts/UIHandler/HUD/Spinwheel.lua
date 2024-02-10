@@ -26,9 +26,51 @@ local Spinwheel : SPINWHEEL = {}
 Spinwheel.__index = Spinwheel
 Spinwheel.INDEXES = {
 
+    ["1000 Coins"] = {
+		Base2D_Rotation = 340
+    };
+
+    ["500 Coins"] = {
+
+		Base2D_Rotation = 25;
+
+    };
+
+    ["Sword"] = {
+		Base2D_Rotation = 295
+    };
+
+    ["300 Coins"] = {
+
+		Base2D_Rotation = 70;
+
+    };
+
+    ["1 Coin"] = {
+
+		Base2D_Rotation = 115;
+
+    };
+
+    ["Other Sword"] = {
+
+		Base2D_Rotation = 160;
+
+    };
+
+    ["Aura"] = {
+		Base2D_Rotation = 205;
+    };
+
+    ["Dash"] = {
+
+		Base2D_Rotation = 250
+
+    };
 }
 
 local Camera : Camera? = workspace.CurrentCamera;
+local StarterGui = game:GetService("StarterGui")
 local Tweenservice = game:GetService("TweenService");
 
 local UIS = game:GetService("UserInputService")
@@ -86,6 +128,12 @@ end
 
 function Spinwheel:_cancel_runner_thread()
 	task.cancel(self._runnerThread)
+end
+
+function Spinwheel:Parse(Action, Arguments)
+	if Action == "Spin" then
+		self:SpinAnimation(Arguments)
+	end
 end
 
 function Spinwheel:Open()
