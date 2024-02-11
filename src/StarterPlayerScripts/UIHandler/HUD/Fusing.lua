@@ -296,7 +296,7 @@ function Fusing:StartFusing()
         if self:_getLen() == 3 then
             
             local BaseContainer = self._fusingTBL.BaseContainer.Name
-            print(BaseContainer)
+            local Item =self._fusingTBL.Item
 
             self:Close();
             self:Reset();
@@ -307,7 +307,7 @@ function Fusing:StartFusing()
                 Action = "ProcessRequest";
                 Arguments = {
 
-                    Item = self._fusingTBL.Item;
+                    Item = Item;
                     Container = BaseContainer;
 
                 }

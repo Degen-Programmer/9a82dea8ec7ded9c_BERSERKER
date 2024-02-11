@@ -71,6 +71,8 @@ end
 
 function Fusing.ProcessRequest(Player, kwargs : {})
 
+    print(Player, kwargs)
+
     if Fusing.Sessions[Player.UserId] then return end
     Fusing.Sessions[Player.UserId] = "X";
 
@@ -84,6 +86,8 @@ function Fusing.ProcessRequest(Player, kwargs : {})
     -- // Start fusing process
 
     local Item, Rarity = Fusing.Fuse()
+
+    print(Item, Rarity)
 
     if Item == "Failure" then
         Fusing.RewardItem(Player, "WoodenSword")
