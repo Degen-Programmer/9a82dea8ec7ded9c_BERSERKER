@@ -82,7 +82,12 @@ function Fusing.New() : FUSING
 	
 	self._name = "Fusing";
 	self._GUI = FUSING_FRAME;
-    self._fusingTBL = {}
+    self._fusingTBL = {
+
+        Item = nil;
+        Count = 0;
+
+    }
 
 	return setmetatable(self, Fusing)
 	
@@ -139,7 +144,10 @@ function Fusing:_getLen()
 end
 
 function Fusing:_getCount(Item : ImageLabel)
-    return string.gsub(Item.ItemCount.Text, "%D", "")
+    
+    local gsub = string.gsub(Item.ItemCount.Text, "%D", "")
+    return tonumber(gsub)
+
 end
 
 function Fusing:Reset()
@@ -152,20 +160,37 @@ end
 
 function Fusing:SelectItem(Item : ImageLabel)
 
-    print("Selected", Item)
-    
+    -- // case 1: Item class has not been determined:
+
     if self:_getLen() == 0 then
-        
-        print("Fresh item.", self:_getCount(Item))
+
+        print("CHECKING...")
+
+        if self:_getCount(Item) < 3 then return end
 
         self._fusingTBL.Item = Item.Name;
+        self:AddItem(Item)
+        self._fusingTBL.Count += 1;
+
+        self:AddItem(Item)
 
     end
 
+    -- // Case 3: Item is determined and player wants to add more of that item
+
+    if self:_getLen() <= 3 and (self._fusingTBL.Item == Item.Name) then
+        self:AddItem()
+    end
+
+    -- // Case 2: Item class has been determined:
+    
+    if self._fusingTBL.Item ~= nil and (Item.Name ~= self._fusingTBL.Item) then
+        -- tell player u cant do dis.
+    end
 end
 
 function Fusing:AddItem()
-    
+    print("Item Added.")
 end
 
 function Fusing:RemoveItem()
