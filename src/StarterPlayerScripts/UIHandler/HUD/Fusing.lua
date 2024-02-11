@@ -6,7 +6,7 @@ type FUSING = {
     _GUI: {
 
         Container : Frame;
-        Close : ImageButton;
+        Cancel : ImageButton;
         Fuse : ImageButton;
 
     };
@@ -54,7 +54,9 @@ type FUSING = {
     
     AddItem : (Item : string) -> string; -- Called upon SelectItem(), if item does not exist than add it.
 
-    StartFusing : () -> nil -- Called upon the fuse button in inventory is clicked.
+    StartFusing : () -> nil; -- Called upon the fuse button in inventory is clicked.
+
+    Reset : ()  -> nil; -- Cleans up everything such that a new fusing session can begin. Called with Close() and PlayAnimation().
 
 };
 
@@ -63,6 +65,7 @@ Fusing.__index = Fusing;
 
 local Playergui = game.Players.LocalPlayer.PlayerGui
 local FUSING_FRAME : Frame = Playergui.Root.Fusing;
+local INVENTORY_FRAME : Frame = Playergui:WaitForChild("Inventory");
 
 local Camera : Camera? = workspace.CurrentCamera;
 local Tweenservice = game:GetService("TweenService");
@@ -87,11 +90,17 @@ end
 
 function Fusing:Deploy()
 
-    task.delay(2, function()
-        local PlayerHUD = require(script.Parent.PlayerHUD).HUD
-        local Tabs = PlayerHUD.Inventory._GUI.Tabs;
+    -- // Start fusing functionality:
 
-        print(Tabs)
+    INVENTORY_FRAME.Tabs.Fuse.Activated:Connect(function()
+        self:StartFusing()
+    end)
+
+    self._GUI.Cancel.Activated:Connect(function(inputObject, clickCount)
+        
+        self:Close()
+        self:Reset()
+
     end)
 end
 
@@ -100,8 +109,37 @@ function Fusing:PostRequest()
     
 end
 
+function Fusing:Open()
+    
+    self._GUI.Size = UDim2.new(0, 0, 0, 0)
+    self._GUI.Visible = true;
+
+    Tweenservice:Create(self._GUI, TweenInfo.new(.25), {Size = UDim2.new(0.263, 0,0.145, 0)}):Play()
+
+end
+
+function Fusing:Close()
+
+    Tweenservice:Create(self._GUI, TweenInfo.new(.25), {Size = UDim2.new(0, 0, 0)}):Play()
+
+    task.delay(.25, function()
+
+        self._GUI.Size = UDim2.new(0, 0, 0, 0)
+        self._GUI.Visible = false;
+
+    end)
+end
+
+function Fusing:Reset()
+    
+end
+
 function Fusing:StartFusing()
     
+    self:Open()
+    self._clickConnections = {}
+
+
 end
 
 return Fusing
