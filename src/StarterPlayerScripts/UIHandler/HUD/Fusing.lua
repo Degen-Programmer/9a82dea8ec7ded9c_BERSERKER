@@ -128,6 +128,9 @@ function Fusing:Deploy()
     end)
 end
 
+function Fusing:Parse(Action, kwargs)
+    
+end
 
 function Fusing:PostRequest()
     
