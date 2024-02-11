@@ -287,6 +287,24 @@ function Fusing:StartFusing()
             end
         end
     end
+
+    self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
+        if self:_getLen() == 3 then
+            print("CAN FUSE!")
+
+            Bridge:Fire({
+
+                Request = "Fusing";
+                Action = "ProcessRequest";
+                Arguments = {
+
+                    Item = self._fusingTBL.Item;
+
+                }
+
+            })
+        end
+    end)
 end
 
 return Fusing

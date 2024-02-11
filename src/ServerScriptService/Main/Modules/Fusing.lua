@@ -16,6 +16,7 @@ function Fusing.ProcessRequest(Player, kwargs : {})
     Fusing.Sessions[Player.UserId] = "X";
 
     local player_data = dataMain:Get(Player).Data;
+    print(kwargs)
 
 end
 
