@@ -153,7 +153,24 @@ function Fusing:_getCount(Item : ImageLabel)
 end
 
 function Fusing:Reset()
-    print(self._clickConnections)
+   
+    for k, v in pairs(self._clickConnections) do
+        if v then v:Disconnect() end
+    end
+
+    for k, v in pairs(self._removerConnections) do
+        if v then v:Disconnect() end
+    end
+
+    for _, v in ipairs(self._GUI.Container:GetChildren()) do
+        if v:Isa("ImageButton") and v.Name ~= "Spare" and v then
+            v:Destroy();
+        end
+    end
+
+    self._fusingTBL.Count = 0;
+    self._fusingTBL.Item = nil;
+
 end
 
 function Fusing:SetAdornee()
@@ -228,7 +245,10 @@ function Fusing:RemoveItem(Item, BaseItem)
     BaseItem.ItemCount.Text = "x"..tostring(self:_getCount(BaseItem) + 1)
 
     if self._fusingTBL.Count == 0 then
-        print("Item removing . . .")
+        
+        print("Item removing . . . ")
+        self:Reset();
+
     end
 end
 
