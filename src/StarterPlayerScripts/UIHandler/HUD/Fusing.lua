@@ -299,6 +299,7 @@ function Fusing:StartFusing()
                 Arguments = {
 
                     Item = self._fusingTBL.Item;
+                    Container = self._fusingTBL.BaseItem.Parent.Name;
 
                 }
 
