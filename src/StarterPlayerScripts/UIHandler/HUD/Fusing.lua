@@ -16,7 +16,7 @@ type FUSING = {
     _fusingTBL : {
 
         Item : string;
-        Container : {};
+        Count : number;
 
     }; -- The list that holds all the selected items
 
@@ -134,7 +134,41 @@ function Fusing:Close()
     end)
 end
 
+function Fusing:_getLen()
+    return self._fusingTBL.Count
+end
+
+function Fusing:_getCount(Item : ImageLabel)
+    return string.gsub(Item.ItemCount.Text, "%D", "")
+end
+
 function Fusing:Reset()
+    print(self._clickConnections)
+end
+
+function Fusing:SetAdornee()
+    
+end
+
+function Fusing:SelectItem(Item : ImageLabel)
+
+    print("Selected", Item)
+    
+    if self:_getLen() == 0 then
+        
+        print("Fresh item.", self:_getCount(Item))
+
+        self._fusingTBL.Item = Item.Name;
+
+    end
+
+end
+
+function Fusing:AddItem()
+    
+end
+
+function Fusing:RemoveItem()
     
 end
 
@@ -143,7 +177,15 @@ function Fusing:StartFusing()
     self:Open()
     self._clickConnections = {}
 
-
+    for _, Containers : ScrollingFrame in ipairs(INVENTORY_FRAME.Containers:GetChildren()) do
+        for _, Item : ImageButton in ipairs(Containers:GetChildren()) do
+            if Item:IsA("ImageButton") then
+                self._clickConnections[Item.Name] = Item.Activated:Connect(function(inputObject, clickCount)
+                    self:SelectItem(Item)
+                end)
+            end
+        end
+    end
 end
 
 return Fusing
