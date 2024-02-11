@@ -290,7 +290,11 @@ function Fusing:StartFusing()
 
     self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
         if self:_getLen() == 3 then
+            
             print("CAN FUSE!")
+
+            self:Close();
+            self:Reset();
 
             Bridge:Fire({
 

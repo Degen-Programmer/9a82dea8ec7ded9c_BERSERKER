@@ -16,6 +16,8 @@ local inventory = require(script.Parent.Inventory);
 local GachaSignals = require(game.ServerScriptService.Main.Modules.Products.Signals)
 local MY_FUCKING_ROBUX = require(script.Parent.Products);
 
+local HUD = net.ReferenceBridgee("HUD")
+
 function Fusing.Fuse()
     local Rarities = Fusing.Chances;
 
@@ -41,8 +43,30 @@ function Fusing.Fuse()
     return GetItem()
 end
 
-function Fusing.RewardItem()
+function Fusing.ReplicateResult(Player, Kwargs)
     
+    HUD:Fire(net.Players({Player}), {
+
+        Element = "Fusing";
+        Action = "PlayAnimation";
+        Arguments = Kwargs;
+
+    })
+
+end
+
+function Fusing.RewardItem(Player, Reward)
+
+    inventory.AddItem(Player, {
+
+        Container = "Weapons";
+        Item = Reward;
+        ItemCount = 1;
+
+    })
+
+    Fusing.ReplicateResult(Player, {SelectedItem = Reward})
+
 end
 
 function Fusing.ProcessRequest(Player, kwargs : {})
@@ -61,7 +85,15 @@ function Fusing.ProcessRequest(Player, kwargs : {})
 
     local Item, Rarity = Fusing.Fuse()
 
-    print(Item, Rarity)
+    if Item == "Failure" then
+        Fusing.RewardItem(Player, "WoodenSword")
+        print("Player failed to fuse unto a higher weapon.")
+    end
+
+    if Item == "Success" then
+        Fusing.RewardItem(Player, "Endsword")
+        print("Player fused unto a higher weapon.")
+    end
 end
 
 return Fusing
