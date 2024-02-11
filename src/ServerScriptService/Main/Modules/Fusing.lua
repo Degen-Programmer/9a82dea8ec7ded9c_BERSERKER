@@ -16,7 +16,7 @@ local inventory = require(script.Parent.Inventory);
 local GachaSignals = require(game.ServerScriptService.Main.Modules.Products.Signals)
 local MY_FUCKING_ROBUX = require(script.Parent.Products);
 
-local HUD = net.ReferenceBridgee("HUD")
+local HUD = net.ReferenceBridge("HUD")
 
 function Fusing.Fuse()
     local Rarities = Fusing.Chances;
