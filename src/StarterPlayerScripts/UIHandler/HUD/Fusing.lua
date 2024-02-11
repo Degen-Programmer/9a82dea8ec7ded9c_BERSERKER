@@ -295,7 +295,8 @@ function Fusing:StartFusing()
     self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
         if self:_getLen() == 3 then
             
-            print("CAN FUSE!")
+            local BaseContainer = self._fusingTBL.BaseContainer.Name
+            print(BaseContainer)
 
             self:Close();
             self:Reset();
@@ -307,7 +308,7 @@ function Fusing:StartFusing()
                 Arguments = {
 
                     Item = self._fusingTBL.Item;
-                    Container = self._fusingTBL.BaseContainer.Name;
+                    Container = BaseContainer;
 
                 }
 
