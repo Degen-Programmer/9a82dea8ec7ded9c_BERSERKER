@@ -13,7 +13,12 @@ type FUSING = {
 
     -- // Unique properties:
 
-    _fusingTBL : {}; -- The list that holds all the selected items
+    _fusingTBL : {
+
+        Item : string;
+        Container : {};
+
+    }; -- The list that holds all the selected items
 
      ---------------------------------------------------
 
@@ -49,6 +54,8 @@ type FUSING = {
     
     AddItem : (Item : string) -> string; -- Called upon SelectItem(), if item does not exist than add it.
 
+    StartFusing : () -> nil -- Called upon the fuse button in inventory is clicked.
+
 };
 
 local Fusing = {} :: FUSING
@@ -66,5 +73,35 @@ local Rep = game:GetService("ReplicatedStorage")
 local Net = require(Rep.Packages.BridgeNet2)
 local Bridge = Net.ReferenceBridge("ServerCommunication");
 
+function Fusing.New() : FUSING
+	
+	local self = {}
+	
+	self._name = "Fusing";
+	self._GUI = FUSING_FRAME;
+    self._fusingTBL = {}
+
+	return setmetatable(self, Fusing)
+	
+end
+
+function Fusing:Deploy()
+
+    task.delay(2, function()
+        local PlayerHUD = require(script.Parent.PlayerHUD).HUD
+        local Tabs = PlayerHUD.Inventory._GUI.Tabs;
+
+        print(Tabs)
+    end)
+end
+
+
+function Fusing:PostRequest()
+    
+end
+
+function Fusing:StartFusing()
+    
+end
 
 return Fusing

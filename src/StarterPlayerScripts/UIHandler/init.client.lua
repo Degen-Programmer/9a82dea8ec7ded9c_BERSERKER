@@ -9,7 +9,19 @@ local playerHud = require(script.HUD.PlayerHUD)
 
 function DeployHUD()
 
-    local HBJ = hd.New({"M1", "Stamina", "Ability", "Eliminations", "Inventory", "Buttons", "Trading", "Spinwheel"})
+    local HBJ = hd.New({
+
+        "M1",
+        "Stamina",
+        "Ability",
+        "Eliminations",
+        "Inventory",
+        "Buttons",
+        "Trading",
+        "Spinwheel",
+        "Fusing",
+
+    })
 
     hd.CurrentHud = HBJ;
     HBJ:Deploy()
