@@ -74,6 +74,8 @@ local UIS = game:GetService("UserInputService")
 local Rep = game:GetService("ReplicatedStorage")
 
 local Net = require(Rep.Packages.BridgeNet2)
+local Configs = require(script.Parent.Parent.Configs)
+
 local Bridge = Net.ReferenceBridge("ServerCommunication");
 
 function Fusing.New() : FUSING
@@ -160,26 +162,26 @@ end
 
 function Fusing:SelectItem(Item : ImageLabel)
 
+    self._removerConnections = {}
+
+    if self:_getLen() ~= 3 and (self._fusingTBL.Item == Item.Name) and (self:_getLen() ~= 0) then
+
+        self:AddItem(Item)
+        self._fusingTBL.Count += 1;
+
+    end
+
     -- // case 1: Item class has not been determined:
 
     if self:_getLen() == 0 then
 
-        print("CHECKING...")
-
         if self:_getCount(Item) < 3 then return end
 
         self._fusingTBL.Item = Item.Name;
-        self:AddItem(Item)
         self._fusingTBL.Count += 1;
 
         self:AddItem(Item)
 
-    end
-
-    -- // Case 3: Item is determined and player wants to add more of that item
-
-    if self:_getLen() <= 3 and (self._fusingTBL.Item == Item.Name) then
-        self:AddItem()
     end
 
     -- // Case 2: Item class has been determined:
@@ -189,12 +191,45 @@ function Fusing:SelectItem(Item : ImageLabel)
     end
 end
 
-function Fusing:AddItem()
-    print("Item Added.")
+function Fusing:AddItem(Item : string)
+
+    local ContainerBaseObject : ScrollingFrame = self._GUI.Container
+	local ConfigsContainer : {} = Configs[Item.Parent.Name]
+	local Spare : ImageButton = ContainerBaseObject.Spare;
+		
+	local ItemConfig = ConfigsContainer[Item.Name];
+	local NewInstance : ImageButton = Spare:Clone();
+	NewInstance.Parent = ContainerBaseObject;
+	NewInstance.Visible = true;
+	NewInstance:FindFirstChild("Icon").Image = ItemConfig.Icon;
+	NewInstance:FindFirstChild("itemName").Text = ItemConfig.DisplayName;
+	
+	NewInstance.Image = Configs.IconFrameAsset_ID[ItemConfig.Rarity]
+	NewInstance.ColorManager.Color = Configs.FrameColor3[ItemConfig.Rarity]
+	NewInstance:FindFirstChild("ItemCount").Text = "x"..tostring(1)
+	NewInstance.Name = Item.Name;
+    
+    -- Update the count of the item:
+
+    Item.ItemCount.Text = "x"..tostring(self:_getCount(Item) - 1)
+
+    -- Create the listener event:
+
+    self._removerConnections[NewInstance.Name] = NewInstance.Activated:Connect(function()
+        self:RemoveItem(NewInstance, Item)
+    end)
 end
 
-function Fusing:RemoveItem()
+function Fusing:RemoveItem(Item, BaseItem)
     
+    Item:Destroy()
+
+    self._fusingTBL.Count -= 1;
+    BaseItem.ItemCount.Text = "x"..tostring(self:_getCount(BaseItem) + 1)
+
+    if self._fusingTBL.Count == 0 then
+        print("Item removing . . .")
+    end
 end
 
 function Fusing:StartFusing()
@@ -206,6 +241,7 @@ function Fusing:StartFusing()
         for _, Item : ImageButton in ipairs(Containers:GetChildren()) do
             if Item:IsA("ImageButton") then
                 self._clickConnections[Item.Name] = Item.Activated:Connect(function(inputObject, clickCount)
+                    print("FIRED")
                     self:SelectItem(Item)
                 end)
             end
