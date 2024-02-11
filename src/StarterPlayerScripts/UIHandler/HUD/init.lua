@@ -164,6 +164,14 @@ function HUD:Hide()
 
 end
 
+function HUD:Unhide()
+
+	TweenService:Create(self.Elements.M1._element._OFFSET, TweenInfo.new(0.25), {Value =  CFrame.new(-0.6, -0.6, -1.15) * CFrame.Angles(0, math.rad(190), 0)}):Play()
+	TweenService:Create(self.Elements.Ability._element._OFFSET, TweenInfo.new(0.25), {Value = CFrame.new(0.6, -0.6, -1.15) * CFrame.Angles(0, math.rad(-190), 0)}):Play()
+	TweenService:Create(self.Elements.Stamina._element._OFFSET, TweenInfo.new(0.25), {Value = CFrame.new(0, -0.65, -1.20) * CFrame.Angles(0, math.rad(180), 0)}):Play()
+
+end
+
 function HUD:CleanupEliminations()
 	self.Elements.Eliminations:Cleanup();
 end

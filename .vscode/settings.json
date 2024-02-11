@@ -1,5 +1,6 @@
 {
     "robloxLsp.diagnostics.disable": [
         "trailing-space"
-    ]
+    ],
+    "discord.enabled": false
 }

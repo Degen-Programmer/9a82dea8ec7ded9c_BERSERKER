@@ -237,9 +237,27 @@ function Inventory:AddItem(Arguments)
 	if self.Containers:FindFirstChild(Arguments.Container):FindFirstChild(Item) then
 		self.Containers:FindFirstChild(Arguments.Container):FindFirstChild(Item).ItemCount.Text = tostring(Count)
 	else
-		print("Item does not exist in the players inventory.")
+
+		print("Item does not exist in the players inventory, creating new entry.")
+
+		local ContainerBaseObject : ScrollingFrame = self.Containers:FindFirstChild(Container);
+		local ConfigsContainer : {} = Configs[Container]
+		local Spare : ImageButton = ContainerBaseObject:FindFirstChild("Spare");
+
+		local ItemConfig = ConfigsContainer[Item];
+		local NewInstance : ImageButton = Spare:Clone();
+
+		NewInstance.Parent = ContainerBaseObject;
+		NewInstance.Visible = true;
+		NewInstance:FindFirstChild("Icon").Image = ItemConfig.Icon;
+		NewInstance:FindFirstChild("itemName").Text = ItemConfig.DisplayName;
+		
+		NewInstance.Image = Configs.IconFrameAsset_ID[ItemConfig.Rarity]
+		NewInstance.ColorManager.Color = Configs.FrameColor3[ItemConfig.Rarity]
+		NewInstance:FindFirstChild("ItemCount").Text = "x"..tostring(Count)
+		NewInstance.Name = Item;
+
 	end
-	
 end
 
 function Inventory:RemoveItem(Arguments)
