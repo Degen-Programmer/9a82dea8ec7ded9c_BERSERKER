@@ -19,6 +19,7 @@ type FUSING = {
         Count : number;
         BaseCount : number;
         BaseItem : ImageButton;
+        BaseContainer : Frame;
 
     }; -- The list that holds all the selected items
 
@@ -92,6 +93,7 @@ function Fusing.New() : FUSING
         Count = 0;
         BaseCount = 0;
         BaseItem = nil;
+        BaseContainer = nil
 
     }
 
@@ -187,6 +189,7 @@ function Fusing:Reset()
     self._fusingTBL.Item = nil;
     self._fusingTBL.BaseCount = 0;
     self._fusingTBL.BaseItem = nil;
+    self._fusingTBL.BaseContainer = nil;
 
 end
 
@@ -215,6 +218,7 @@ function Fusing:SelectItem(Item : ImageLabel)
         self._fusingTBL.Count += 1;
         self._fusingTBL.BaseCount = self:_getCount(Item)
         self._fusingTBL.BaseItem = Item;
+        self._fusingTBL.BaseContainer = Item.Parent
         
         self:AddItem(Item)
 
@@ -303,7 +307,7 @@ function Fusing:StartFusing()
                 Arguments = {
 
                     Item = self._fusingTBL.Item;
-                    Container = self._fusingTBL.BaseItem.Parent.Name;
+                    Container = self._fusingTBL.BaseContainer.Name;
 
                 }
 
