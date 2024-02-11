@@ -17,6 +17,7 @@ type FUSING = {
 
         Item : string;
         Count : number;
+        BaseCount : number;
 
     }; -- The list that holds all the selected items
 
@@ -88,6 +89,7 @@ function Fusing.New() : FUSING
 
         Item = nil;
         Count = 0;
+        BaseCount = 0;
 
     }
 
@@ -103,6 +105,13 @@ function Fusing:Deploy()
 
         self:StartFusing()
         require(script.Parent.PlayerHUD).HUD:Hide()
+
+    end)
+    INVENTORY_FRAME.Close.Activated:Connect(function()
+        
+        self:Close()
+        self:Reset()
+        require(script.Parent.PlayerHUD).HUD:Unhide()
 
     end)
 
@@ -158,18 +167,24 @@ function Fusing:Reset()
         if v then v:Disconnect() end
     end
 
-    for k, v in pairs(self._removerConnections) do
-        if v then v:Disconnect() end
+    if self._removerConnections then
+        for k, v in pairs(self._removerConnections) do
+            if v then v:Disconnect() end
+        end
     end
 
     for _, v in ipairs(self._GUI.Container:GetChildren()) do
-        if v:Isa("ImageButton") and v.Name ~= "Spare" and v then
+        if v:IsA("ImageButton") and v.Name ~= "Spare" and v then
             v:Destroy();
         end
     end
 
+    self._fusingTBL.Item.ItemCount.Text = "x"..tostring(self._fusingTBL.BaseCount)
+
     self._fusingTBL.Count = 0;
     self._fusingTBL.Item = nil;
+    self._fusingTBL.BaseCount = 0;
+
 
 end
 
@@ -196,8 +211,10 @@ function Fusing:SelectItem(Item : ImageLabel)
 
         self._fusingTBL.Item = Item.Name;
         self._fusingTBL.Count += 1;
+        self._fusingTBL.BaseCount = self:_getCount(Item)
 
         self:AddItem(Item)
+
 
     end
 
