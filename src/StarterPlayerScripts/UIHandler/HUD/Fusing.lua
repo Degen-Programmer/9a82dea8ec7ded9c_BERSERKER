@@ -93,13 +93,17 @@ function Fusing:Deploy()
     -- // Start fusing functionality:
 
     INVENTORY_FRAME.Tabs.Fuse.Activated:Connect(function()
+
         self:StartFusing()
+        require(script.Parent.PlayerHUD).HUD:Hide()
+
     end)
 
     self._GUI.Cancel.Activated:Connect(function(inputObject, clickCount)
         
         self:Close()
         self:Reset()
+        require(script.Parent.PlayerHUD).HUD:Unhide()
 
     end)
 end
