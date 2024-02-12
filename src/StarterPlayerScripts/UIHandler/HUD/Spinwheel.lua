@@ -249,6 +249,16 @@ function Spinwheel:Deploy()
 	self._GUI.Actions.Buy.Activated:Connect(function(inputObject, clickCount)
 		self._GUI.SpinShop.Visible = true;
 	end)
+
+	for _, v : ImageLabel in ipairs(self._GUI.SpinShop.Container:GetChildren()) do
+		
+		if v:IsA("UIAspectRatioConstraint") then return end
+		local BuyButton : ImageButton = v:FindFirstChild("Buy")
+
+		Buy.Activated:Connect(function(inputObject, clickCount)
+			print("ACTING ! ! ! ! ! ")
+		end)
+	end
 end
 
 return Spinwheel
