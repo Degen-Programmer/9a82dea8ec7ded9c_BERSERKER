@@ -1,7 +1,5 @@
 local Spinwheel = {}
-
-Spinwheel.Signals = {}
-Spinwheel.Spins = {
+Spinwheel.Products = {
 
     ["1721874331"] = {Spins = 5; Name = "5Spins"};
     ["1721875653"] = {Spins = 10; Name = "10Spins"};

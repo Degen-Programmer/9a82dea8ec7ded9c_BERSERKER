@@ -254,8 +254,20 @@ function Spinwheel:Deploy()
 		if v:IsA("ImageLabel") then  
 			local BuyButton : ImageButton = v:FindFirstChild("Buy")
 
-			Buy.Activated:Connect(function(inputObject, clickCount)
-				print("ACTING ! ! ! ! ! ")
+			BuyButton.Activated:Connect(function(inputObject, clickCount)
+
+				Bridge:Fire({
+
+					Request = "Products";
+					Action = "ProcessPurchase";
+					Arguments = {
+
+						Product_Class = "Spinwheel";
+						Product_Name = v.Name;
+
+					}
+				})
+
 			end)
 		end
 	end
