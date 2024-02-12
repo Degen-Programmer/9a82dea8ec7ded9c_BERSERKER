@@ -171,18 +171,6 @@ function Gacha:Deploy()
         end)
     end
 
-    local function resizeRest(item)
-        for _, v in ipairs(self._elements) do
-            task.spawn(function()
-                if v.Name == "1" then return end
-                print("FALSL")
-            end)
-
-            print(v.Name)
-        end
-    end
-
-    resizeRest()
 
     for _, v : ImageButton in ipairs(Playergui.Cards:GetChildren()) do
 
@@ -200,8 +188,57 @@ function Gacha:Deploy()
         end)
 
         v.ImageButton.Activated:Connect(function()
-            
+            self:PlayX5Animation()
         end)
+    end
+end
+
+function Gacha:InitCardOffset()
+    self._RUNNER_THREAD = task.spawn(function()
+        game:GetService("RunService").RenderStepped:Connect(function()
+            for _, v in ipairs(self._cards) do
+                
+                v.CFrame = Camera.CFrame * v._OFFSET.Value
+
+            end
+        end)
+    end)
+end
+
+function Gacha:PlayX5Animation()
+    
+    self._cards = {}
+
+    for i = 1, 5 do
+        
+        local element : Part = game.ReplicatedStorage.UI.BaseCard;
+	    local newElement = element:Clone()
+	    newElement.Parent = workspace;
+
+        self._cards[i] = newElement;    
+        newElement._OFFSET.Value = CFrame.new(-0.8, 0, -1.2) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0);
+        newElement.Name = tostring(i);
+
+    end
+
+    -- // remove all other cards:
+
+    for _, v in ipairs(self._elements) do
+        Tweenservice:Create(v, TweenInfo.new(.25), {Size = Vector3.new(0, 0, 0)}):Play()
+    end
+
+    -- // initialize the render loop:
+
+    self:InitCardOffset()
+    
+    -- // tween the parts positions:
+
+    for i = 1, 5 do
+        
+        local element = self._cards[i]
+        Tweenservice:Create(element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
+        Tweenservice:Create(element._OFFSET, TweenInfo.new(.25), {Value = self._positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)}):Play()
+
     end
 end
 
