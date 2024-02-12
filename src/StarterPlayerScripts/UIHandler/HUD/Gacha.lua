@@ -72,7 +72,12 @@ function Gacha.New()
 end
 
 function Gacha:SetAdornee()
-    
+    for _, v in ipairs(self._elements) do
+        
+        local adorner = Playergui.Cards:FindFirstChild(v.Name)
+        adorner.Adornee = v;
+
+    end
 end
 
 function Gacha:_init_runner_thread()
@@ -105,13 +110,15 @@ function Gacha:Open()
 
     local positions = {
 
-        CFrame.new(-0.8, 0, 0, -1.2);
-        CFrame.new(-0.4, 0, 0, -1.2);
-        CFrame.new(0, 0, 0, -1.2);
-        CFrame.new(0.4, 0, 0, -1.2);
-        CFrame.new(0.8, 0, 0, -1.2);
+        CFrame.new(-0.8, 0, -1.2);
+        CFrame.new(-0.4, 0, -1.2);
+        CFrame.new(0, 0, -1.2);
+        CFrame.new(0.4, 0, -1.2);
+        CFrame.new(0.8, 0, -1.2);
 
     }
+
+    self:SetAdornee()
 
     task.spawn(function()
 
@@ -123,11 +130,13 @@ function Gacha:Open()
             offset.Value = positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
             Tweenservice:Create(element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
 
+            task.wait(.1)
+
         end
     end)
 
     self:_init_runner_thread()
-
+    
 end
 
 function Gacha:Deploy()
@@ -139,6 +148,8 @@ function Gacha:Deploy()
 	    newElement.Parent = workspace;
 
         self._elements[i] = newElement;    
+        
+        newElement.Name = tostring(i)
 
     end
 
@@ -160,6 +171,19 @@ function Gacha:Deploy()
         end)
     end
 
+    for _, v : ImageButton in ipairs(Playergui.Cards:GetChildren()) do
+        v.ImageButton.MouseEnter:Connect(function()
+            print("AAA")
+        end)
+
+        v.ImageButton.MouseLeave:Connect(function()
+            print("left")
+        end)
+
+        v.ImageButton.Activated:Connect(function()
+            print("clicked")
+        end)
+    end
 end
 
 return Gacha
