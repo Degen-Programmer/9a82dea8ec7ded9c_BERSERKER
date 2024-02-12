@@ -82,7 +82,19 @@ function Load(Player: Player)
 
 			}
 
-		})		
+		})	
+		
+		HUD:Fire({
+
+			Element = "Spinwheel";
+			Action = "UpdateSpins";
+			Arguments = {
+	
+				Spins = Usable_Data.Spins;
+	
+			}
+	
+		})
 
 		return Usable_Data
 

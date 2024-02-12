@@ -138,6 +138,14 @@ function Spinwheel:Parse(Action, Arguments)
 	if Action == "Spin" then
 		self:SpinAnimation(Arguments)
 	end
+
+	if Action == "UpdateSpins" then
+		self:UpdateSpins()
+	end
+end
+
+function Spinwheel:UpdateSpins(NewSpins)
+	self._GUI.Spins.Text = tostring(NewSpins)
 end
 
 function Spinwheel:Open()
