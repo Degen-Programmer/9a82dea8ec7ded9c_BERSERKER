@@ -135,12 +135,14 @@ function Spinwheel:_cancel_runner_thread()
 end
 
 function Spinwheel:Parse(Action, Arguments)
+
 	if Action == "Spin" then
 		self:SpinAnimation(Arguments)
 	end
 
+	print("GOT ARGUMNETNS", Arguments, Action)
 	if Action == "UpdateSpins" then
-		self:UpdateSpins()
+		self:UpdateSpins(Arguments.Spins)
 	end
 end
 
