@@ -19,6 +19,7 @@ type FUSING = {
         Count : number;
         BaseCount : number;
         BaseItem : ImageButton;
+        BaseContainer : Frame;
 
     }; -- The list that holds all the selected items
 
@@ -92,6 +93,7 @@ function Fusing.New() : FUSING
         Count = 0;
         BaseCount = 0;
         BaseItem = nil;
+        BaseContainer = nil
 
     }
 
@@ -126,6 +128,9 @@ function Fusing:Deploy()
     end)
 end
 
+function Fusing:Parse(Action, kwargs)
+    
+end
 
 function Fusing:PostRequest()
     
@@ -187,6 +192,7 @@ function Fusing:Reset()
     self._fusingTBL.Item = nil;
     self._fusingTBL.BaseCount = 0;
     self._fusingTBL.BaseItem = nil;
+    self._fusingTBL.BaseContainer = nil;
 
 end
 
@@ -215,6 +221,7 @@ function Fusing:SelectItem(Item : ImageLabel)
         self._fusingTBL.Count += 1;
         self._fusingTBL.BaseCount = self:_getCount(Item)
         self._fusingTBL.BaseItem = Item;
+        self._fusingTBL.BaseContainer = Item.Parent
         
         self:AddItem(Item)
 
@@ -287,6 +294,30 @@ function Fusing:StartFusing()
             end
         end
     end
+
+    self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
+        if self:_getLen() == 3 then
+            
+            local BaseContainer = self._fusingTBL.BaseContainer.Name
+            local Item =self._fusingTBL.Item
+
+            self:Close();
+            self:Reset();
+
+            Bridge:Fire({
+
+                Request = "Fusing";
+                Action = "ProcessRequest";
+                Arguments = {
+
+                    Item = Item;
+                    Container = BaseContainer;
+
+                }
+
+            })
+        end
+    end)
 end
 
 return Fusing
