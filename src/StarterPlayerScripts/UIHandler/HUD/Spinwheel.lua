@@ -135,9 +135,19 @@ function Spinwheel:_cancel_runner_thread()
 end
 
 function Spinwheel:Parse(Action, Arguments)
+
 	if Action == "Spin" then
 		self:SpinAnimation(Arguments)
 	end
+
+	print("GOT ARGUMNETNS", Arguments, Action)
+	if Action == "UpdateSpins" then
+		self:UpdateSpins(Arguments.Spins)
+	end
+end
+
+function Spinwheel:UpdateSpins(NewSpins)
+	self._GUI.Spins.Text = tostring(NewSpins)
 end
 
 function Spinwheel:Open()
@@ -254,8 +264,20 @@ function Spinwheel:Deploy()
 		if v:IsA("ImageLabel") then  
 			local BuyButton : ImageButton = v:FindFirstChild("Buy")
 
-			Buy.Activated:Connect(function(inputObject, clickCount)
-				print("ACTING ! ! ! ! ! ")
+			BuyButton.Activated:Connect(function(inputObject, clickCount)
+
+				Bridge:Fire({
+
+					Request = "Products";
+					Action = "ProcessPurchase";
+					Arguments = {
+
+						Product_Class = "Spinwheel";
+						Product_Name = v.Name;
+
+					}
+				})
+
 			end)
 		end
 	end

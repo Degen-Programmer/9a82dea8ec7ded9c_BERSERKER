@@ -51,6 +51,18 @@ function Load(Player: Player)
 	if dataMain.Profiles[Player.UserId] then
 
 		local Usable_Data = dataMain:Get(Player).Data;
+
+		HUD:Fire({
+
+			Element = "Spinwheel";
+			Action = "UpdateSpins";
+			Arguments = {
+	
+				Spins = Usable_Data.Spins;
+	
+			}
+	
+		})
 	
 		if combatMain.__users[Player.UserId] then
 			print("Combat data found, deleted.")
@@ -82,7 +94,19 @@ function Load(Player: Player)
 
 			}
 
-		})		
+		})	
+		
+		HUD:Fire({
+
+			Element = "Spinwheel";
+			Action = "UpdateSpins";
+			Arguments = {
+	
+				Spins = Usable_Data.Spins;
+	
+			}
+	
+		})
 
 		return Usable_Data
 

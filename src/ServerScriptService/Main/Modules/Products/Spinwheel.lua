@@ -1,7 +1,5 @@
 local Spinwheel = {}
-
-Spinwheel.Signals = {}
-Spinwheel.Spins = {
+Spinwheel.Products = {
 
     ["1721874331"] = {Spins = 5; Name = "5Spins"};
     ["1721875653"] = {Spins = 10; Name = "10Spins"};
@@ -13,8 +11,32 @@ Spinwheel.Spins = {
 
 }
 
-function Spinwheel.ProcessReciept(Player, PRODUCT_PURCHASE_ID)
+local DataMain = require(game.ServerScriptService.Main.Data)
+local Net = require(game.ReplicatedStorage.Packages.BridgeNet2)
+
+local Bridge = Net.ReferenceBridge("HUD")
+
+function Spinwheel.FulfillPromise(Player, PRODUCT_PURCHASE_ID)
     
+    local Data = DataMain:Get(Player).Data;
+    local ProductData = Spinwheel.Products[PRODUCT_PURCHASE_ID]
+
+    Data.Spins += ProductData.Spins
+    
+    Bridge:Fire({
+
+        Element = "Spinwheel";
+        Action = "UpdateSpins";
+        Arguments = {
+
+            Spins = Data.Spins;
+
+        }
+
+    })
+
+    print("Succesful.", Data)
+
 end
 
 return Spinwheel
