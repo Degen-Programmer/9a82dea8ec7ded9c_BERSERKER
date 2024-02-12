@@ -65,6 +65,7 @@ function Gacha.New()
     self._name = "Gacha";
     self._container = CardPacks
     self._elements = {}
+    self._element = nil;
 
 	return setmetatable(self, Gacha)
 
@@ -77,43 +78,69 @@ end
 function Gacha:_init_runner_thread()
 
     local bounds = Vector2.new(-0.5, 0.5)
-	self:SetAdornee()
 
 	self._runnerThread = task.spawn(function()
 		game:GetService("RunService").RenderStepped:Connect(function()
 
-			local screenSize = Camera.ViewportSize;
-			local mousePos = (UIS:GetMouseLocation() - screenSize / 2) * (2 / screenSize)
+			for U, v in ipairs(self._elements) do
+                local screenSize = Camera.ViewportSize;
+			    local mousePos = (UIS:GetMouseLocation() - screenSize / 2) * (2 / screenSize)
 
-			local yaw = CFrame.fromEulerAnglesXYZ(
+			    local yaw = CFrame.fromEulerAnglesXYZ(
 
-				math.rad(mousePos.Y * bounds.Y),
-				math.rad(mousePos.X * bounds.X),
-				0
+			    	math.rad(mousePos.Y * bounds.Y),
+			    	math.rad(mousePos.X * bounds.X),
+			    	0
 
-			)
-			
-			self._element.CFrame = Camera.CFrame * self._element._OFFSET.Value * yaw;
-			
+			    )
+            
+			    v.CFrame = Camera.CFrame * v._OFFSET.Value * yaw;
+
+            end
 		end)
 	end)
 end
 
 function Gacha:Open()
 
+    local positions = {
+
+        CFrame.new(-0.8, 0, 0, -1.2);
+        CFrame.new(-0.4, 0, 0, -1.2);
+        CFrame.new(0, 0, 0, -1.2);
+        CFrame.new(0.4, 0, 0, -1.2);
+        CFrame.new(0.8, 0, 0, -1.2);
+
+    }
+
+    task.spawn(function()
+
+        for i = 1, 5 do
+            
+            local element : Part = self._elements[i]
+            local offset : CFrameValue = element._OFFSET;
+
+            offset.Value = positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
+            Tweenservice:Create(element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
+
+        end
+    end)
+
     self:_init_runner_thread()
-    Tweenservice:Create(self._element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
 
 end
 
 function Gacha:Deploy()
 
-    local element : Part = game.ReplicatedStorage.UI.Card;
-	local newElement = element:Clone()
-	newElement.Parent = workspace;
+    for i = 1, 5 do
 
-    self._elements[1] = element;
-    self._element = self._elements[1]
+        local element : Part = game.ReplicatedStorage.UI.Card;
+	    local newElement = element:Clone()
+	    newElement.Parent = workspace;
+
+        self._elements[i] = newElement;    
+
+    end
 
     for _, part : Part in ipairs(self._container:GetChildren()) do
         
