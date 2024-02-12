@@ -66,6 +66,16 @@ function Gacha.New()
     self._container = CardPacks
     self._elements = {}
     self._element = nil;
+    self._positions = {
+
+        CFrame.new(-0.8, 0, -1.2);
+        CFrame.new(-0.4, 0, -1.2);
+        CFrame.new(0, 0, -1.2);
+        CFrame.new(0.4, 0, -1.2);
+        CFrame.new(0.8, 0, -1.2);
+
+    }
+
 
 	return setmetatable(self, Gacha)
 
@@ -108,16 +118,6 @@ end
 
 function Gacha:Open()
 
-    local positions = {
-
-        CFrame.new(-0.8, 0, -1.2);
-        CFrame.new(-0.4, 0, -1.2);
-        CFrame.new(0, 0, -1.2);
-        CFrame.new(0.4, 0, -1.2);
-        CFrame.new(0.8, 0, -1.2);
-
-    }
-
     self:SetAdornee()
 
     task.spawn(function()
@@ -127,7 +127,7 @@ function Gacha:Open()
             local element : Part = self._elements[i]
             local offset : CFrameValue = element._OFFSET;
 
-            offset.Value = positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
+            offset.Value = self._positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
             Tweenservice:Create(element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
 
             task.wait(.1)
@@ -171,17 +171,36 @@ function Gacha:Deploy()
         end)
     end
 
+    local function resizeRest(item)
+        for _, v in ipairs(self._elements) do
+            task.spawn(function()
+                if v.Name == "1" then return end
+                print("FALSL")
+            end)
+
+            print(v.Name)
+        end
+    end
+
+    resizeRest()
+
     for _, v : ImageButton in ipairs(Playergui.Cards:GetChildren()) do
+
+        local element : Part = self._elements[tonumber(v.Name)]
+        local offset : CFrameValue = element._OFFSET;
+
+        local eulerRotation = CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
+
         v.ImageButton.MouseEnter:Connect(function()
-            print("AAA")
+            Tweenservice:Create(offset, TweenInfo.new(.25), {Value = offset.Value * CFrame.new(0, 0.05, 0)}):Play()
         end)
 
         v.ImageButton.MouseLeave:Connect(function()
-            print("left")
+            Tweenservice:Create(offset, TweenInfo.new(.25), {Value = self._positions[tonumber(v.Name)] * eulerRotation}):Play()
         end)
 
         v.ImageButton.Activated:Connect(function()
-            print("clicked")
+            
         end)
     end
 end
