@@ -13,10 +13,22 @@ function Handler.ProcessPurchase(player : Player, Kwargs : {})
     local Module = require(script:FindFirstChild(Kwargs.Product_Class))
     local Products = Module.Products;
 
+    local PRODUCT_PURCHASE_ID = nil;
+
     for k, v in pairs(Products) do
         if Kwargs.Product_Name == v.Name then 
-            print(k, v)
+            PRODUCT_PURCHASE_ID = tostring(k)
         end
+    end
+
+    local Success, Error = pcall(function()
+        MarketplaceService:PromptProductPurchase(player, PRODUCT_PURCHASE_ID)
+    end)
+
+    if Success then
+        return
+    else
+        warn("Bruh!")
     end
 end
 
