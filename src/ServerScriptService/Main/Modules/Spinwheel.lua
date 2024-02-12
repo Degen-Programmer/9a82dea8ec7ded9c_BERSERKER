@@ -81,7 +81,6 @@ local dataMain = require(game.ServerScriptService.Main.Data)
 local combat = require(game.ServerScriptService.Main.Combat.Users);
 local net = require(game.ReplicatedStorage.Packages.BridgeNet2);
 local inventory = require(script.Parent.Inventory);
-local GachaSignals = require(game.ServerScriptService.Main.Modules.Products.Signals)
 local MY_FUCKING_ROBUX = require(script.Parent.Products);
 
 local ClientCommunication = net.ReferenceBridge("HUD");
