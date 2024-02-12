@@ -11,7 +11,7 @@ Spinwheel.Products = {
 
 }
 
-function Spinwheel.ProcessReciept(Player, PRODUCT_PURCHASE_ID)
+function Spinwheel.FulfillPromise(Player, PRODUCT_PURCHASE_ID)
     
 end
 

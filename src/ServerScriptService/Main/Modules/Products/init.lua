@@ -3,7 +3,9 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 
 local DataMain = require(game.ServerScriptService.Main.Data);
+local Signals = require(game.ReplicatedStorage.Packages.GoodSignal)
 
+local OnPurchaseSuccess = Signals.new()
 local Handler = {}
 
 -- // Processor callback:
@@ -26,7 +28,14 @@ function Handler.ProcessPurchase(player : Player, Kwargs : {})
     end)
 
     if Success then
-        return
+        OnPurchaseSuccess:Connect(function(Product_ID, player_ID)
+            
+            if player_ID ~= player.UserId then return end
+            if not player then return end
+
+            Module.FulfillPromise(player, PRODUCT_PURCHASE_ID)
+            
+        end)
     else
         warn("Bruh!")
     end
@@ -37,8 +46,10 @@ MarketplaceService.ProcessReceipt = function(Receipt)
     local Customer = Players:GetPlayerByUserId(Receipt.PlayerId)
     local Product = Receipt.ProductId
     
+    -- // Player did not leave game:
+
     if Customer then
-        print(Receipt)
+        OnPurchaseSuccess:Fire(Receipt.ProductId, Receipt.PlayerId)
     end
 end
 
