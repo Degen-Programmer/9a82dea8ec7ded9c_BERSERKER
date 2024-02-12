@@ -2,7 +2,6 @@ local DataStoreService = game:GetService("DataStoreService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 
-local Signals = require(script.Signals)
 local DataMain = require(game.ServerScriptService.Main.Data);
 
 local Handler = {}
