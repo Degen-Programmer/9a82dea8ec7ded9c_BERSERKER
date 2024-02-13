@@ -57,6 +57,7 @@ local Rep = game:GetService("ReplicatedStorage")
 
 local Net = require(Rep.Packages.BridgeNet2)
 local Bezier = require(Rep.Packages.Bezier)
+local Effects = require(script.Parent.Parent.Parent.Utilities.Effects)
 
 local Bridge = Net.ReferenceBridge("ServerCommunication");
 
@@ -213,7 +214,21 @@ function Gacha:PlayX5Animation()
 
     require(script.Parent.PlayerHUD).HUD:Hide()
     
+    local _positions = {
+
+        [1] = CFrame.new(-0.8, 0, -1.2);
+        [2] = CFrame.new(-0.4, 0, -1.2);
+        [3] = CFrame.new(0, 0, -1.2);
+        [4] = CFrame.new(0.4, 0, -1.2);
+        [5] = CFrame.new(0.8, 0, -1.2);
+
+    }
+
     self._cards = {}
+
+    local ColorCorrection = Instance.new("ColorCorrectionEffect")
+    ColorCorrection.Parent = Camera;
+    ColorCorrection.TintColor = Color3.new(103, 104, 101)
 
     -- // remove all other cards:
 
@@ -246,18 +261,17 @@ function Gacha:PlayX5Animation()
     
     -- // tween the parts positions:
 
-    for i = 1, 1 do
+    for i = 1, 5 do
         
         local element = self._cards[i]
         
-        local endPos = Vector3.new(self._positions[i])
-        print(endPos)
+        local endPos = self._positions[i].Position
         local startPos = Vector3.new(-0.8, 0, -0.9)
 
         local points = Bezier.new({
 
             startPos;
-            Vector3.new(0, 1.5, -3);
+            Vector3.new(0, Random.new():NextInteger(-1, 1), Random.new():NextInteger(-1, -3));
             endPos
 
         })
@@ -271,8 +285,15 @@ function Gacha:PlayX5Animation()
                 Tweenservice:Create(element._OFFSET, TweenInfo.new(0.01), {Value = cf}):Play()
                 task.wait(0.01)
 
+                if x == 50 then 
+                    print("EMITTING")
+                    Effects._Emit(element.VFX)
+                end 
+
             end
         end)
+
+        task.wait(.25)
         
     end
 end
