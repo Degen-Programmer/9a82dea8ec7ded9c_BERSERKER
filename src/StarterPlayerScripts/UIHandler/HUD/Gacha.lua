@@ -56,6 +56,8 @@ local UIS = game:GetService("UserInputService")
 local Rep = game:GetService("ReplicatedStorage")
 
 local Net = require(Rep.Packages.BridgeNet2)
+local Bezier = require(Rep.Packages.Bezier)
+
 local Bridge = Net.ReferenceBridge("ServerCommunication");
 
 function Gacha.New()
@@ -205,40 +207,7 @@ function Gacha:InitCardOffset()
     end)
 end
 
-function lerp(a, b, c)
-	return a + (b - a) * c
-end
-
-function quadBezier(t, p0, p1, p2)
-
-	local l1 = lerp(p0, p1, t)
-	local l2 = lerp(p1, p2, t)
-	local quad = lerp(l1, l2, t)
-	return quad
-
-end
-
-function generateBezier(iterations : number, startPoint, endPoint, Midpoint)
-
-    local points = {}
-
-    for i = 1, iterations do 
-        
-        local bezierPoint = quadBezier(i,
-
-            startPoint,
-            Midpoint,
-            endPoint
-
-        )
-
-        table.insert(points, bezierPoint)
-
-    end
-
-    return points
-    
-end
+local eulerangles = CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
 
 function Gacha:PlayX5Animation()
 
@@ -277,13 +246,33 @@ function Gacha:PlayX5Animation()
     
     -- // tween the parts positions:
 
-    for i = 1, 2 do
+    for i = 1, 1 do
         
         local element = self._cards[i]
-        local point = quadBezier()
+        
+        local endPos = Vector3.new(self._positions[i])
+        print(endPos)
+        local startPos = Vector3.new(-0.8, 0, -0.9)
 
-        local points = generateBezier(5, element.Position, self._positions[i], (element.Position + self._positions[i]) / 2)
-        print(points)
+        local points = Bezier.new({
+
+            startPos;
+            Vector3.new(0, 1.5, -3);
+            endPos
+
+        })
+
+        task.spawn(function()
+            for x = 1, 50 do
+                
+                local decastleJauPos = points:DeCasteljau(x / 50)
+                local cf = CFrame.new(decastleJauPos) * eulerangles
+
+                Tweenservice:Create(element._OFFSET, TweenInfo.new(0.01), {Value = cf}):Play()
+                task.wait(0.01)
+
+            end
+        end)
         
     end
 end
