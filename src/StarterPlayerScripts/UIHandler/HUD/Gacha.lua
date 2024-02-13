@@ -205,31 +205,71 @@ function Gacha:InitCardOffset()
     end)
 end
 
+function lerp(a, b, c)
+	return a + (b - a) * c
+end
+
+function quadBezier(t, p0, p1, p2)
+
+	local l1 = lerp(p0, p1, t)
+	local l2 = lerp(p1, p2, t)
+	local quad = lerp(l1, l2, t)
+	return quad
+
+end
+
+function generateBezier(iterations : number, startPoint, endPoint, Midpoint)
+
+    local points = {}
+
+    for i = 1, iterations do 
+        
+        local bezierPoint = quadBezier(i,
+
+            startPoint,
+            Midpoint,
+            endPoint
+
+        )
+
+        table.insert(points, bezierPoint)
+
+    end
+
+    return points
+    
+end
+
 function Gacha:PlayX5Animation()
+
+    require(script.Parent.PlayerHUD).HUD:Hide()
     
     self._cards = {}
 
     -- // remove all other cards:
 
-    for _, v in ipairs(self._elements) do
-        Tweenservice:Create(v, TweenInfo.new(.25), {Size = Vector3.new(0, 0, 0)}):Play()
-    end
+    task.spawn(function()
+        for _, v in ipairs(self._elements) do
+            Tweenservice:Create(v, TweenInfo.new(.25), {Size = Vector3.new(0, 0, 0)}):Play()
+        end
+    end)
 
-    task.wait(.2)
+    task.wait(.25)
 
-    for i = 1, 5 do
-        
-        local element : Part = game.ReplicatedStorage.UI.BaseCard;
-	    local newElement = element:Clone()
-	    newElement.Parent = workspace;
+    task.spawn(function()
+        for i = 1, 5 do
 
-        self._cards[i] = newElement;    
-        newElement._OFFSET.Value = CFrame.new(-0.8, 0, -1) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0);
-        newElement.Name = tostring(i);
-
-        task.wait(.1)
-
-    end
+            local element : Part = game.ReplicatedStorage.UI.BaseCard;
+            local newElement = element:Clone()
+    
+            newElement.Parent = workspace;
+            self._cards[i] = newElement;    
+            
+            newElement._OFFSET.Value = CFrame.new(-0.8, 0, -0.9) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0);
+            newElement.Name = tostring(i);
+    
+        end
+    end)
 
     -- // initialize the render loop:
 
@@ -237,12 +277,14 @@ function Gacha:PlayX5Animation()
     
     -- // tween the parts positions:
 
-    for i = 1, 5 do
+    for i = 1, 2 do
         
         local element = self._cards[i]
-        Tweenservice:Create(element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
-        Tweenservice:Create(element._OFFSET, TweenInfo.new(.25), {Value = self._positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)}):Play()
+        local point = quadBezier()
 
+        local points = generateBezier(5, element.Position, self._positions[i], (element.Position + self._positions[i]) / 2)
+        print(points)
+        
     end
 end
 
