@@ -79,6 +79,10 @@ function Gacha.New()
 
     }
 
+    self._enterConnections = {}
+    self._leaveConnections = {}
+    self._activateConnections = {}
+
 
 	return setmetatable(self, Gacha)
 
@@ -182,15 +186,15 @@ function Gacha:Deploy()
 
         local eulerRotation = CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
 
-        v.ImageButton.MouseEnter:Connect(function()
+        self._enterConnections[v.Name] = v.ImageButton.MouseEnter:Connect(function()
             Tweenservice:Create(offset, TweenInfo.new(.25), {Value = offset.Value * CFrame.new(0, 0.05, 0)}):Play()
         end)
 
-        v.ImageButton.MouseLeave:Connect(function()
+        self._leaveConnections[v.Name] = v.ImageButton.MouseLeave:Connect(function()
             Tweenservice:Create(offset, TweenInfo.new(.25), {Value = self._positions[tonumber(v.Name)] * eulerRotation}):Play()
         end)
 
-        v.ImageButton.Activated:Connect(function()
+        self._activateConnections[v.Name] = v.ImageButton.Activated:Connect(function()
             self:PlayX5Animation()
         end)
     end
@@ -210,6 +214,30 @@ end
 
 local eulerangles = CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
 
+function Gacha:Animation_ShakePart(part : Part, duration)
+    local handler_thread = task.spawn(function()
+        while true do
+
+            -- // shake:
+
+            task.wait(.1)
+
+            part._OFFSET.Value = CFrame.new(Random.new():NextNumber(0.1, 0.4), Random.new():NextNumber(0.1, 0.4), -0.8)
+
+            -- // readjust:
+
+            task.wait(.1)
+
+            part._OFFSET.Value = CFrame.new(0, 0, -0.8) * eulerangles
+
+        end
+    end)
+
+    task.delay(duration, function()
+        task.cancel(handler_thread)
+    end)
+end
+
 function Gacha:PlayX5Animation()
 
     require(script.Parent.PlayerHUD).HUD:Hide()
@@ -226,19 +254,45 @@ function Gacha:PlayX5Animation()
 
     self._cards = {}
 
-    local ColorCorrection = Instance.new("ColorCorrectionEffect")
-    ColorCorrection.Parent = Camera;
-    ColorCorrection.TintColor = Color3.new(103, 104, 101)
+    --local ColorCorrection = Instance.new("ColorCorrectionEffect")
+    --ColorCorrection.Parent = Camera;
+    --ColorCorrection.TintColor = Color3.new(0.023529, 0.023529, 0.023529)
 
     -- // remove all other cards:
 
     task.spawn(function()
         for _, v in ipairs(self._elements) do
-            Tweenservice:Create(v, TweenInfo.new(.25), {Size = Vector3.new(0, 0, 0)}):Play()
+            if v.Name ~= "1" then
+                Tweenservice:Create(v, TweenInfo.new(.25), {Size = Vector3.new(0, 0, 0)}):Play()
+            else
+
+                self._leaveConnections["1"]:Disconnect();
+                self._activateConnections["1"]:Disconnect();
+                self._enterConnections["1"]:Disconnect();
+
+                local element = v;
+                local offset = v._OFFSET;
+
+                Tweenservice:Create(offset, TweenInfo.new(.25), {Value = CFrame.new(0, 0, -0.8) * eulerangles}):Play()
+
+                for _, v in ipairs(element.Chargeup:GetChildren()) do
+                    v.Enabled = true;
+                end
+
+                self:Animation_ShakePart(element, 5)
+
+                task.delay(5, function()
+                    for _, v in ipairs(element.Chargeup:GetChildren()) do
+                        v.Enabled = false;
+                    end
+                end)
+            end
         end
     end)
 
-    task.wait(.25)
+
+
+    --[[task.wait(.25)
 
     task.spawn(function()
         for i = 1, 5 do
@@ -268,34 +322,7 @@ function Gacha:PlayX5Animation()
         local endPos = self._positions[i].Position
         local startPos = Vector3.new(-0.8, 0, -0.9)
 
-        local points = Bezier.new({
-
-            startPos;
-            Vector3.new(0, Random.new():NextInteger(-1, 1), Random.new():NextInteger(-1, -3));
-            endPos
-
-        })
-
-        task.spawn(function()
-            for x = 1, 50 do
-                
-                local decastleJauPos = points:DeCasteljau(x / 50)
-                local cf = CFrame.new(decastleJauPos) * eulerangles
-
-                Tweenservice:Create(element._OFFSET, TweenInfo.new(0.01), {Value = cf}):Play()
-                task.wait(0.01)
-
-                if x == 50 then 
-                    print("EMITTING")
-                    Effects._Emit(element.VFX)
-                end 
-
-            end
-        end)
-
-        task.wait(.25)
-        
-    end
+    end]]
 end
 
 return Gacha
