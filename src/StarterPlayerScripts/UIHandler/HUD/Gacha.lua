@@ -61,6 +61,8 @@ local Effects = require(script.Parent.Parent.Parent.Utilities.Effects)
 local cam_effects = require(script.Parent.Parent.Parent.Utilities.Camera)
 local vertex_manipualtion = require(script.Parent.Parent.Parent.Utilities.VertexManipulation)
 
+local Mouse = game.Players.LocalPlayer:GetMouse()
+
 print(vertex_manipualtion)
 
 local Bridge = Net.ReferenceBridge("ServerCommunication");
@@ -87,6 +89,7 @@ function Gacha.New()
     self._leaveConnections = {}
     self._activateConnections = {}
 
+    self._isOpening = false;
 
 	return setmetatable(self, Gacha)
 
@@ -105,28 +108,97 @@ end
 
 function Gacha:_init_runner_thread()
 
-    local bounds = Vector2.new(-0.5, 0.5)
+    local bounds = Vector2.new(-2, 2)
+    local currentTarget
 
 	self._runnerThread = task.spawn(function()
 		game:GetService("RunService").RenderStepped:Connect(function(t)
-
 			for U, v in ipairs(self._elements) do
-                local screenSize = Camera.ViewportSize;
-			    local mousePos = (UIS:GetMouseLocation() - screenSize / 2) * (2 / screenSize)
+                v.CFrame = Camera.CFrame * v._OFFSET.Value;
+            end
 
-			    local yaw = CFrame.fromEulerAnglesXYZ(
+            -- // these 7 lines of code below are more fucked than Mia Khalifa's cunt. fix this bs later i cant deal with this fucking cancer inducing function rn
 
-			    	math.rad(mousePos.Y * bounds.Y),
-			    	math.rad(mousePos.X * bounds.X),
-			    	0
+            if self._elements[tonumber(Mouse.Target.Name)] then
+                
+                local currentTarget = self._elements[tonumber(Mouse.Target.Name)];
 
-			    )
-            
-			    v.CFrame = Camera.CFrame * v._OFFSET.Value * yaw;
-
+                for _, v in ipairs(self._elements) do
+                    if v == currentTarget and self._isOpening == false then
+                       Tweenservice:Create(v, TweenInfo.new(.15), {Size = Vector3.new(0.478, 0.113, 0.754)}):Play()
+                    elseif v ~= currentTarget and self._isOpening == false then
+                        Tweenservice:Create(v, TweenInfo.new(.15), {Size = Vector3.new(0.456, 0.108, 0.719)}):Play()
+                    end
+                end
             end
 		end)
 	end)
+    
+    Mouse.Button1Down:Connect(function()
+        if self._elements[tonumber(Mouse.Target.Name)] then
+            
+            local element = self._elements[tonumber(Mouse.Target.Name)]
+            local offset = element._OFFSET;
+
+            self:StartAnimation(Mouse.Target)
+
+        end
+    end)
+end
+
+local eulerAngles = CFrame.fromEulerAnglesXYZ(math.rad(90), math.rad(180), 0)
+
+function Gacha:StartAnimation(clicked)
+
+    self._isOpening = true;
+    require(script.Parent.PlayerHUD).HUD:Hide()
+
+    for _, v in ipairs(self._elements) do
+        
+        local element : Part = v;
+        local offset : CFrameValue = element._OFFSET;
+
+        -- // resize all other parts.
+
+        if element ~= clicked then
+            print("RESIZING....")
+            Tweenservice:Create(element, TweenInfo.new(.15), {Size = Vector3.new(0, 0, 0)}):Play();
+        end
+    end
+
+    -- // bring the card in front of the screen:
+
+    local card : Part = clicked;
+    local cardOffset : CFrameValue = card._OFFSET;
+
+    -- // Tween:
+
+    Tweenservice:Create(cardOffset, TweenInfo.new(.25), {Value = CFrame.new(0, 0, -0.9) * eulerAngles}):Play()
+    Tweenservice:Create(card, TweenInfo.new(.2), {Size = Vector3.new(0.507, 0.12, 0.8)}):Play()
+
+    task.delay(0.1, function()
+        Effects._Emit(card.Appear)
+        for _, v in ipairs(card.Linger:GetChildren()) do
+            v.Enabled = true;
+        end       
+        task.wait(.1)
+    end)
+
+    -- // Effects:
+
+    task.delay(1, function()
+        Effects._Emit(card.Appear)
+        print("Emitted.")
+
+        -- // progress with the animation
+        Tweenservice:Create(cardOffset, TweenInfo.new(.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {Value = CFrame.new(0, 0.1, -1) * eulerAngles}):Play()
+        task.wait(.25)
+        Tweenservice:Create(cardOffset, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In, 0, false, 0), {Value = CFrame.new(0, -0.35, -1.5) * eulerAngles}):Play()
+        task.wait(1)
+        Tweenservice:Create(cardOffset, TweenInfo.new(.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {Value = CFrame.new(0, -0.3, -1) * eulerAngles}):Play()
+
+    end)
+    
 end
 
 function Gacha:_init_sin_thread(element)
@@ -137,9 +209,10 @@ function Gacha:_init_sin_thread(element)
 
     self._sineThreads[element.Name] = task.spawn(function()
         game:GetService("RunService").Stepped:Connect(function(t)
-            local zOffset = CFrame.new(0, 0, math.sin(t) * 0.0005)
             
+            local zOffset = CFrame.new(0, 0, math.sin(t) * 0.0002)
             element._OFFSET.Value *= zOffset
+
         end)
     end)
 end
@@ -165,13 +238,12 @@ function Gacha:Open()
                 vertex_manipualtion.VerticesData_Class.AppearFromPoint(VERTEX_DATA, Vector3.new(0, -100, 0), 0.5, 15)
             end)
 
-            task.wait(.1)
+            task.wait(0.1)
 
         end
     end)
 
     self:_init_runner_thread()
-    
 end
 
 function Gacha:Deploy()
