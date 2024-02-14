@@ -58,6 +58,10 @@ local Rep = game:GetService("ReplicatedStorage")
 local Net = require(Rep.Packages.BridgeNet2)
 local Bezier = require(Rep.Packages.Bezier)
 local Effects = require(script.Parent.Parent.Parent.Utilities.Effects)
+local cam_effects = require(script.Parent.Parent.Parent.Utilities.Camera)
+local vertex_manipualtion = require(script.Parent.Parent.Parent.Utilities.VertexManipulation)
+
+print(vertex_manipualtion)
 
 local Bridge = Net.ReferenceBridge("ServerCommunication");
 
@@ -71,11 +75,11 @@ function Gacha.New()
     self._element = nil;
     self._positions = {
 
-        CFrame.new(-0.8, 0, -1.2);
-        CFrame.new(-0.4, 0, -1.2);
+        CFrame.new(-1, 0, -1.2);
+        CFrame.new(-0.5, 0, -1.2);
         CFrame.new(0, 0, -1.2);
-        CFrame.new(0.4, 0, -1.2);
-        CFrame.new(0.8, 0, -1.2);
+        CFrame.new(0.5, 0, -1.2);
+        CFrame.new(1, 0, -1.2);
 
     }
 
@@ -89,20 +93,22 @@ function Gacha.New()
 end
 
 function Gacha:SetAdornee()
-    for _, v in ipairs(self._elements) do
+    --[[for _, v in ipairs(self._elements) do
         
         local adorner = Playergui.Cards:FindFirstChild(v.Name)
         adorner.Adornee = v;
 
-    end
+    end]]
 end
+
+
 
 function Gacha:_init_runner_thread()
 
     local bounds = Vector2.new(-0.5, 0.5)
 
 	self._runnerThread = task.spawn(function()
-		game:GetService("RunService").RenderStepped:Connect(function()
+		game:GetService("RunService").RenderStepped:Connect(function(t)
 
 			for U, v in ipairs(self._elements) do
                 local screenSize = Camera.ViewportSize;
@@ -123,9 +129,24 @@ function Gacha:_init_runner_thread()
 	end)
 end
 
+function Gacha:_init_sin_thread(element)
+
+    self._sineThreads = {}
+
+    local len = 2 * math.pi;
+
+    self._sineThreads[element.Name] = task.spawn(function()
+        game:GetService("RunService").Stepped:Connect(function(t)
+            local zOffset = CFrame.new(0, 0, math.sin(t) * 0.0005)
+            
+            element._OFFSET.Value *= zOffset
+        end)
+    end)
+end
+
 function Gacha:Open()
 
-    self:SetAdornee()
+   -- self:SetAdornee()
 
     task.spawn(function()
 
@@ -134,8 +155,15 @@ function Gacha:Open()
             local element : Part = self._elements[i]
             local offset : CFrameValue = element._OFFSET;
 
-            offset.Value = self._positions[i] * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
-            Tweenservice:Create(element, TweenInfo.new(.25), {Size = Vector3.new(0.379, 0.532, 0.001)}):Play()
+            offset.Value = self._positions[i] * CFrame.fromEulerAnglesXYZ(math.rad(90), math.rad(180), 0)
+
+            local mesh = element.EditableMesh;
+            self:_init_sin_thread(element)
+
+            task.spawn(function()
+                local VERTEX_DATA =  vertex_manipualtion.VerticesData_Class.CreateVerticesData(element, mesh)
+                vertex_manipualtion.VerticesData_Class.AppearFromPoint(VERTEX_DATA, Vector3.new(0, -100, 0), 0.5, 15)
+            end)
 
             task.wait(.1)
 
@@ -150,11 +178,14 @@ function Gacha:Deploy()
 
     for i = 1, 5 do
 
-        local element : Part = game.ReplicatedStorage.UI.Card;
+        local element : Part = game.ReplicatedStorage.UI.Pack;
 	    local newElement = element:Clone()
 	    newElement.Parent = workspace;
 
         self._elements[i] = newElement;    
+
+        local editableMesh = game:GetService("AssetService"):CreateEditableMeshAsync(newElement.MeshId)
+        editableMesh.Parent = newElement;
         
         newElement.Name = tostring(i)
 
@@ -198,131 +229,6 @@ function Gacha:Deploy()
             self:PlayX5Animation()
         end)
     end
-end
-
-function Gacha:InitCardOffset()
-    self._RUNNER_THREAD = task.spawn(function()
-        game:GetService("RunService").RenderStepped:Connect(function()
-            for _, v in ipairs(self._cards) do
-                
-                v.CFrame = Camera.CFrame * v._OFFSET.Value
-
-            end
-        end)
-    end)
-end
-
-local eulerangles = CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
-
-function Gacha:Animation_ShakePart(part : Part, duration)
-    local handler_thread = task.spawn(function()
-        while true do
-
-            -- // shake:
-
-            task.wait(.1)
-
-            part._OFFSET.Value = CFrame.new(Random.new():NextNumber(0.1, 0.4), Random.new():NextNumber(0.1, 0.4), -0.8)
-
-            -- // readjust:
-
-            task.wait(.1)
-
-            part._OFFSET.Value = CFrame.new(0, 0, -0.8) * eulerangles
-
-        end
-    end)
-
-    task.delay(duration, function()
-        task.cancel(handler_thread)
-    end)
-end
-
-function Gacha:PlayX5Animation()
-
-    require(script.Parent.PlayerHUD).HUD:Hide()
-    
-    local _positions = {
-
-        [1] = CFrame.new(-0.8, 0, -1.2);
-        [2] = CFrame.new(-0.4, 0, -1.2);
-        [3] = CFrame.new(0, 0, -1.2);
-        [4] = CFrame.new(0.4, 0, -1.2);
-        [5] = CFrame.new(0.8, 0, -1.2);
-
-    }
-
-    self._cards = {}
-
-    --local ColorCorrection = Instance.new("ColorCorrectionEffect")
-    --ColorCorrection.Parent = Camera;
-    --ColorCorrection.TintColor = Color3.new(0.023529, 0.023529, 0.023529)
-
-    -- // remove all other cards:
-
-    task.spawn(function()
-        for _, v in ipairs(self._elements) do
-            if v.Name ~= "1" then
-                Tweenservice:Create(v, TweenInfo.new(.25), {Size = Vector3.new(0, 0, 0)}):Play()
-            else
-
-                self._leaveConnections["1"]:Disconnect();
-                self._activateConnections["1"]:Disconnect();
-                self._enterConnections["1"]:Disconnect();
-
-                local element = v;
-                local offset = v._OFFSET;
-
-                Tweenservice:Create(offset, TweenInfo.new(.25), {Value = CFrame.new(0, 0, -0.8) * eulerangles}):Play()
-
-                for _, v in ipairs(element.Chargeup:GetChildren()) do
-                    v.Enabled = true;
-                end
-
-                self:Animation_ShakePart(element, 5)
-
-                task.delay(5, function()
-                    for _, v in ipairs(element.Chargeup:GetChildren()) do
-                        v.Enabled = false;
-                    end
-                end)
-            end
-        end
-    end)
-
-
-
-    --[[task.wait(.25)
-
-    task.spawn(function()
-        for i = 1, 5 do
-
-            local element : Part = game.ReplicatedStorage.UI.BaseCard;
-            local newElement = element:Clone()
-    
-            newElement.Parent = workspace;
-            self._cards[i] = newElement;    
-            
-            newElement._OFFSET.Value = CFrame.new(-0.8, 0, -0.9) * CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0);
-            newElement.Name = tostring(i);
-    
-        end
-    end)
-
-    -- // initialize the render loop:
-
-    self:InitCardOffset()
-    
-    -- // tween the parts positions:
-
-    for i = 1, 5 do
-        
-        local element = self._cards[i]
-        
-        local endPos = self._positions[i].Position
-        local startPos = Vector3.new(-0.8, 0, -0.9)
-
-    end]]
 end
 
 return Gacha
