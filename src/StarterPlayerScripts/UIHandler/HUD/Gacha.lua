@@ -1,52 +1,216 @@
---!nocheck
-
-type GACHA = {
-
-     ---------------------------------------------------
-
-    -- // Base Properities inherited from ELEMENT:
-
-    ---------------------------------------------------
-
-    _name : string;
-    _GUI : {
-
-    };
-
-     ---------------------------------------------------
-
-    -- // Base Methods inherited from ELEMENT:
-
-    -----------------------------------------------------
-
-    New : () -> nil; -- creates a new Gacha class object. called only once.
-
-    CreateBlur : () -> nil;  -- creates a blur in the camera background. saves the blur as (self._blur)
-
-    Open : (Menu : string) -> nil;  -- Opens the menu selected (Weapons/Abilities...etc)
-
-    Close : () -> nil;  -- Gets the currently open meny and closes it.
-    
-    Deploy : () -> nil;  -- creates a new _element instance. called only once.
-
-    ParseRequest : (kwargs : {}) -> (any?); -- parses any request incoming from the server.
-
-    ---------------------------------------------------
-
-    -- // Unique class-specific methods:
-
-    -----------------------------------------------------
-
-    PostRequest : () -> nil; --
-
-}
-
---{6, 0},{7, 0}
-
 local Gacha = {}
 Gacha.__index = Gacha
 
-local Playergui = game.Players.LocalPlayer.PlayerGui
+Gacha.Positions = {
+
+    ["5"] = {
+
+        Size = UDim2.new(0.558, 0, 0.798, 0);
+        ScaledSize = UDim2.new(0.568, 0, 0.812, 0);
+
+        Positions = {
+
+            UDim2.new(-0.743640661, 0, 0.50877279, 0);
+            UDim2.new(-0.124811858, 0, 0.506795704, 0);
+            UDim2.new(0.499948144, 0, 0.506795704, 0);
+            UDim2.new(1.12075436, 0, 0.506795704, 0);
+            UDim2.new(1.74551451, 0, 0.504818618, 0);
+
+        }
+
+    };
+
+    ["10"] = {
+
+        Size = UDim2.new(0.513, 0,0.734, 0);
+        ScaledSize = UDim2.new(0.536, 0, 0.765, 0);
+
+        Positions = {
+
+            UDim2.new(-0.729801059, 0, 0.146965563, 0);
+            UDim2.new(-0.110972233, 0, 0.144988477, 0);
+            UDim2.new(0.513787806, 0, 0.144988477, 0);
+            UDim2.new(1.13459396, 0, 0.144988477, 0);
+            UDim2.new(1.75935411, 0, 0.143011391, 0);
+            UDim2.new(-0.729801059, 0, 1.00897634, 0);
+            UDim2.new(-0.110972233, 0, 1.00699925, 0);
+            UDim2.new(0.513787806, 0, 1.00699925, 0);
+            UDim2.new(1.13459396, 0, 1.00699925, 0);
+            UDim2.new(1.75935411, 0, 1.00502217, 0);
+
+        }
+
+    };
+
+    ["15"] = {
+
+        Size = UDim2.new(0.417, 0, 0.595, 0);
+        ScaledSize = UDim2.new(0.429, 0, 0.613, 0);
+
+        Positions = {
+
+            UDim2.new(-0.406845421, 0, -0.068715401, 0);
+            UDim2.new(0.046051845, 0, -0.0702770948, 0);
+            UDim2.new(0.503634155, 0, -0.0718388483, 0);
+            UDim2.new(0.951846242, 0, -0.068715401, 0);
+            UDim2.new(1.40474379, 0, -0.0718388483, 0);
+            UDim2.new(1.40474367, 0, 0.559094012, 0);
+            UDim2.new(0.951846123, 0, 0.562217355, 0);
+            UDim2.new(0.503634512, 0, 0.559094012, 0);
+            UDim2.new(0.046051804, 0, 0.560655594, 0);
+            UDim2.new(-0.40864715, 0, 0.562217355, 0);
+            UDim2.new(-0.40864715, 0, 1.19824016, 0);
+            UDim2.new(0.046051804, 0, 1.19667828, 0);
+            UDim2.new(0.503634512, 0, 1.19511676, 0);
+            UDim2.new(0.951846123, 0, 1.19824016, 0);
+            UDim2.new(1.40474367, 0, 1.19511676, 0);
+
+        }
+
+    };
+
+    ["20"] = {
+
+        Size = UDim2.new(0.324, 0, 0.463, 0);
+        ScaledSize = UDim2.new(0.344, 0,0.491, 0);
+
+        Positions = {
+
+            UDim2.new(-0.011917606, 0, 0.0317967236, 0);
+            UDim2.new(0.340711474, 0, 0.0305807758, 0);
+            UDim2.new(0.696988046, 0, 0.0293647163, 0);
+            UDim2.new(1.04596937, 0, 0.0317967236, 0);
+            UDim2.new(1.39859843, 0, 0.0293647163, 0);
+            UDim2.new(1.39859843, 0, 0.520613313, 0);
+            UDim2.new(1.04596901, 0, 0.52304548, 0);
+            UDim2.new(0.696988404, 0, 0.520613372, 0);
+            UDim2.new(0.340711474, 0, 0.521829367, 0);
+            UDim2.new(-0.0133203128, 0, 0.523045421, 0);
+            UDim2.new(-0.0133203128, 0, 1.0182569, 0);
+            UDim2.new(0.340711474, 0, 1.01704097, 0);
+            UDim2.new(0.696988404, 0, 1.01582515, 0);
+            UDim2.new(1.04596901, 0, 1.01825702, 0);
+            UDim2.new(1.39859843, 0, 1.01582515, 0);
+            UDim2.new(-0.377276629, 0, 0.0317740142, 0);
+            UDim2.new(-0.734941542, 0, 1.01792467, 0);
+            UDim2.new(-0.376862884, 0, 0.52302593, 0);
+            UDim2.new(1.76487279, 0, 1.01373553, 0);
+            UDim2.new(-0.376139164, 0, 1.01670909, 0);
+
+        }
+
+    };
+
+    ["25"] = {
+
+        Size = UDim2.new(0.324, 0, 0.463, 0);
+        ScaledSize = UDim2.new(0.344, 0,0.491, 0);
+
+        Positions = {
+
+           UDim2.new(1.39499485, 0, 0.0323353633, 0);
+           UDim2.new(1.04236543, 0, 0.0347674787, 0);
+           UDim2.new(0.693384886, 0, 0.0323353633, 0);
+           UDim2.new(0.337107956, 0, 0.0335513093, 0);
+           UDim2.new(-0.0169238411, 0, 0.0347673707, 0);
+           UDim2.new(2.11570048, 0, 0.0302602109, 0);
+           UDim2.new(-1.0844835, 0, 0.0341615379, 0);
+           UDim2.new(-0.380466431, 0, 0.034747906, 0);
+           UDim2.new(1.75406218, 0, 0.0353777073, 0);
+           UDim2.new(-0.731338024, 0, 0.0359633043, 0);
+           UDim2.new(0.337107956, 0, 0.527234614, 0);
+           UDim2.new(1.39499485, 0, 0.52601862, 0);
+           UDim2.new(0.693384886, 0, 0.526018679, 0);
+           UDim2.new(-0.0169238411, 0, 0.528450668, 0);
+           UDim2.new(2.11570048, 0, 0.523943543, 0);
+           UDim2.new(-1.0844835, 0, 0.527844846, 0);
+           UDim2.new(-0.380466431, 0,0.528431237, 0);
+           UDim2.new(1.75406218, 0, 0.529061079, 0);
+           UDim2.new(-0.731338024, 0,0.529646635, 0);
+           UDim2.new(1.04236543, 0, 0.528450847, 0);
+           UDim2.new(0.162336856, 0,1.01731443, 0);
+           UDim2.new(1.22022378, 0, 1.01609838, 0);
+           UDim2.new(0.518613815, 0, 1.0160985, 0);
+           UDim2.new(-0.191694945, 0,1.01853049, 0);
+           UDim2.new(0.867594302, 0, 1.01853061, 0);
+
+        }
+
+    };
+
+    ["30"] = {
+
+        Size = UDim2.new(0.324, 0, 0.463, 0);
+        ScaledSize = UDim2.new(0.344, 0,0.491, 0);
+
+        Positions = {
+
+            UDim2.new(1.41121078, 0, 0.0197230149, 0);
+            UDim2.new(1.05858135, 0, 0.0221551321, 0);
+            UDim2.new(0.709600747, 0, 0.0197230149, 0);
+            UDim2.new(0.353323847, 0, 0.0209389627, 0);
+            UDim2.new(-0.000707965461, 0, 0.0221550222, 0);
+            UDim2.new(2.13191628, 0, 0.0176478624, 0);
+            UDim2.new(-1.0682677, 0, 0.0215491913, 0);
+            UDim2.new(-0.364250541,0, 0.0221355557, 0);
+            UDim2.new(1.7702781, 0,0.0227653608, 0);
+            UDim2.new(-0.715122163,0, 0.0233509559, 0);
+            UDim2.new(0.353323847, 0, 0.514622271, 0);
+            UDim2.new(1.41121078, 0, 0.513406277, 0);
+            UDim2.new(0.709600747, 0, 0.513406336, 0);
+            UDim2.new(-0.000707965461, 0, 0.515838325, 0);
+            UDim2.new(2.13191628, 0, 0.511331201, 0);
+            UDim2.new(-1.0682677, 0, 0.515232503, 0);
+            UDim2.new(-0.364250541,0, 0.515818894, 0);
+            UDim2.new(1.7702781, 0,0.516448736, 0);
+            UDim2.new(-0.715122163,0, 0.517034292, 0);
+            UDim2.new(1.05858135, 0, 0.515838504, 0);
+            UDim2.new(-0.711518645,0, 1.02271962, 0);
+            UDim2.new(0.346368223, 0, 1.02150369, 0);
+            UDim2.new(-0.355241716,0, 1.02150381, 0);
+            UDim2.new(-1.06915402, 0, 1.03114295, 0);
+            UDim2.new(-0.00626119552, 0, 1.02393591, 0);
+            UDim2.new(0.718195736, 0, 1.02393579, 0);
+            UDim2.new(1.07583129, 0, 1.01551259, 0);
+            UDim2.new(1.43210828, 0, 1.01429677, 0);
+            UDim2.new(1.78108859, 0, 1.01672888, 0);
+            UDim2.new(2.13371801, 0, 1.01429665, 0);
+
+        }
+
+    };
+    
+}
+
+local list = {
+
+    Positions = {}
+
+}
+
+for _, v in ipairs(game.StarterGui.Root.Gacha.Batch:GetChildren()) do
+    table.insert(list.Positions, v.Position)
+end
+
+print(list)
+
+type Card = {
+
+    Front : {
+
+        Icon : ImageLabel;
+        ItemName : TextLabel;
+        ItemRarity : TextLabel;
+        ItemChance : TextLabel;
+
+    };
+    
+    Back : ImageButton
+
+
+}
+
+local Playergui = game.Players.LocalPlayer.PlayerGui.Root
 local CardPacks = workspace.Map.CardPacks;
 
 local Camera : Camera? = workspace.CurrentCamera;
@@ -54,17 +218,9 @@ local Tweenservice = game:GetService("TweenService");
 
 local UIS = game:GetService("UserInputService")
 local Rep = game:GetService("ReplicatedStorage")
+local Configs = require(script.Parent.Parent.Configs)
 
 local Net = require(Rep.Packages.BridgeNet2)
-local Bezier = require(Rep.Packages.Bezier)
-local Effects = require(script.Parent.Parent.Parent.Utilities.Effects)
-local cam_effects = require(script.Parent.Parent.Parent.Utilities.Camera)
-local vertex_manipualtion = require(script.Parent.Parent.Parent.Utilities.VertexManipulation)
-
-local Mouse = game.Players.LocalPlayer:GetMouse()
-
-print(vertex_manipualtion)
-
 local Bridge = Net.ReferenceBridge("ServerCommunication");
 
 function Gacha.New()
@@ -72,235 +228,184 @@ function Gacha.New()
     local self = {}
 
     self._name = "Gacha";
-    self._container = CardPacks
-    self._elements = {}
-    self._element = nil;
-    self._positions = {
+    self._GUI = Playergui.Gacha;
 
-        CFrame.new(-1, 0, -1.2);
-        CFrame.new(-0.5, 0, -1.2);
-        CFrame.new(0, 0, -1.2);
-        CFrame.new(0.5, 0, -1.2);
-        CFrame.new(1, 0, -1.2);
+    self._FXConnections = {}
+    self._isopening = false;
 
-    }
-
-    self._enterConnections = {}
-    self._leaveConnections = {}
-    self._activateConnections = {}
-
-    self._isOpening = false;
-
-	return setmetatable(self, Gacha)
+    return setmetatable(self, Gacha)
 
 end
 
-function Gacha:SetAdornee()
-    --[[for _, v in ipairs(self._elements) do
-        
-        local adorner = Playergui.Cards:FindFirstChild(v.Name)
-        adorner.Adornee = v;
-
-    end]]
-end
-
-
-
-function Gacha:_init_runner_thread()
-
-    local bounds = Vector2.new(-2, 2)
-    local currentTarget
-
-	self._runnerThread = task.spawn(function()
-		game:GetService("RunService").RenderStepped:Connect(function(t)
-			for U, v in ipairs(self._elements) do
-                v.CFrame = Camera.CFrame * v._OFFSET.Value;
-            end
-
-            -- // these 7 lines of code below are more fucked than Mia Khalifa's cunt. fix this bs later i cant deal with this fucking cancer inducing function rn
-
-            if self._elements[tonumber(Mouse.Target.Name)] then
-                
-                local currentTarget = self._elements[tonumber(Mouse.Target.Name)];
-
-                for _, v in ipairs(self._elements) do
-                    if v == currentTarget and self._isOpening == false then
-                       Tweenservice:Create(v, TweenInfo.new(.15), {Size = Vector3.new(0.478, 0.113, 0.754)}):Play()
-                    elseif v ~= currentTarget and self._isOpening == false then
-                        Tweenservice:Create(v, TweenInfo.new(.15), {Size = Vector3.new(0.456, 0.108, 0.719)}):Play()
-                    end
-                end
-            end
-		end)
-	end)
-    
-    Mouse.Button1Down:Connect(function()
-        if self._elements[tonumber(Mouse.Target.Name)] then
-            
-            local element = self._elements[tonumber(Mouse.Target.Name)]
-            local offset = element._OFFSET;
-
-            self:StartAnimation(Mouse.Target)
-
-        end
-    end)
-end
-
-local eulerAngles = CFrame.fromEulerAnglesXYZ(math.rad(90), math.rad(180), 0)
-
-function Gacha:StartAnimation(clicked)
-
-    self._isOpening = true;
-    require(script.Parent.PlayerHUD).HUD:Hide()
-
-    for _, v in ipairs(self._elements) do
-        
-        local element : Part = v;
-        local offset : CFrameValue = element._OFFSET;
-
-        -- // resize all other parts.
-
-        if element ~= clicked then
-            print("RESIZING....")
-            Tweenservice:Create(element, TweenInfo.new(.15), {Size = Vector3.new(0, 0, 0)}):Play();
-        end
+function Gacha:Parse(Action , Kwargs)
+    if Action == "PlayAnimation" then
+        self:OpenAnimation(Kwargs)
     end
 
-    -- // bring the card in front of the screen:
-
-    local card : Part = clicked;
-    local cardOffset : CFrameValue = card._OFFSET;
-
-    -- // Tween:
-
-    Tweenservice:Create(cardOffset, TweenInfo.new(.25), {Value = CFrame.new(0, 0, -0.9) * eulerAngles}):Play()
-    Tweenservice:Create(card, TweenInfo.new(.2), {Size = Vector3.new(0.507, 0.12, 0.8)}):Play()
-
-    task.delay(0.1, function()
-        Effects._Emit(card.Appear)
-        for _, v in ipairs(card.Linger:GetChildren()) do
-            v.Enabled = true;
-        end       
-        task.wait(.1)
-    end)
-
-    -- // Effects:
-
-    task.delay(1, function()
-        Effects._Emit(card.Appear)
-        print("Emitted.")
-
-        -- // progress with the animation
-        Tweenservice:Create(cardOffset, TweenInfo.new(.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {Value = CFrame.new(0, 0.1, -1) * eulerAngles}):Play()
-        task.wait(.25)
-        Tweenservice:Create(cardOffset, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In, 0, false, 0), {Value = CFrame.new(0, -0.35, -1.5) * eulerAngles}):Play()
-        task.wait(1)
-        Tweenservice:Create(cardOffset, TweenInfo.new(.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 0, false, 0), {Value = CFrame.new(0, -0.3, -1) * eulerAngles}):Play()
-
-    end)
-    
+    if Action == "Update" then
+        self:Update(Kwargs)
+    end
 end
 
-function Gacha:_init_sin_thread(element)
+function Gacha:Update(Kwargs)
+    
+    self._GUI.Prompt.Prompt.Text = "Would you like to open 5 Cards or "..tostring(Kwargs.Max).." Cards?"
+    self._GUI.Prompt.Amounts.Max.Text = tostring(Kwargs.Max).." Cards"
 
-    self._sineThreads = {}
+end
 
-    local len = 2 * math.pi;
+function Gacha:Reset()
+    for _,v in ipairs(self._GUI.Batch:GetChildren()) do
+        v:Destroy()
+        
+    end
 
-    self._sineThreads[element.Name] = task.spawn(function()
-        game:GetService("RunService").Stepped:Connect(function(t)
-            
-            local zOffset = CFrame.new(0, 0, math.sin(t) * 0.0002)
-            element._OFFSET.Value *= zOffset
+    for _,v  in ipairs(self._FXConnections) do
+        if v then v:Disconnect() end
+    end 
+
+    self._blur:Destroy()
+
+    Tweenservice:Create(workspace.CurrentCamera, TweenInfo.new(.25), {FieldOfView = 70}):Play()
+end
+
+function Gacha:OpenAnimation(kwargs)
+
+    print(kwargs)
+
+    self._isopening = true;
+    require(script.Parent.PlayerHUD).HUD:Hide()
+    
+    local list = kwargs.List
+    local Times = Gacha.Positions[tostring(kwargs.Times)];
+    print(Times, tostring(kwargs.Times))
+    local Batch = self._GUI.Batch;
+
+    Tweenservice:Create(workspace.CurrentCamera, TweenInfo.new(.25), {FieldOfView = 80}):Play()
+    
+    self._blur = Instance.new("BlurEffect")
+    self._blur.Size = 10;
+    self._blur.Parent = workspace.CurrentCamera;
+
+    for i = 1, #Times.Positions do
+
+        print(list[i])
+        
+        local newCard : Card = self._GUI.Card:Clone()
+        newCard.Parent = Batch;
+
+        local config =  Configs[kwargs.Container][list[i]]
+
+        newCard.Front.ItemChance.Text = config.Chance;
+        newCard.Front.ItemName.Text = config.DisplayName;
+        newCard.Front.ItemRarity.Text = config.Rarity;
+        newCard.Front.Icon.Image = config.Icon;
+
+        newCard.Size = UDim2.new(0, 0, 0, 0)
+
+        newCard.Visible = true;
+        newCard.Position = Times.Positions[i]
+        
+        Tweenservice:Create(newCard, TweenInfo.new(0.2), {Size = Times.Size}):Play()
+
+        task.wait(0.1)
+
+    end
+
+    -- // create hover and click connections
+
+    for _, v : Card in ipairs(Batch:GetChildren()) do
+
+        local conn1 = v.MouseEnter:Connect(function()
+            Tweenservice:Create(v, TweenInfo.new(.1), {Size = Times.ScaledSize}):Play()
+        end)
+
+        local conn2 = v.MouseLeave:Connect(function()
+            Tweenservice:Create(v, TweenInfo.new(.1), {Size = Times.Size}):Play()
+        end)
+
+        local conn3 = v.Back.Activated:Connect(function()
+
+            for _, c in ipairs(self._FXConnections) do
+                if c then c:Disconnect() end
+            end
+
+            for _, card : Card in ipairs(Batch:GetChildren()) do
+
+                Tweenservice:Create(card, TweenInfo.new(.1), {Size = UDim2.new(0 , 0, 0, 0)}):Play()
+    
+                task.wait(.1)
+                
+                card.Back.Visible = false;
+                card.Front.Visible = true
+    
+                Tweenservice:Create(card, TweenInfo.new(.1), {Size = Times.ScaledSize}):Play()
+    
+            end
+    
+            task.wait(2)
+    
+            self:Reset()
+            self._isopening = false;
+            require(script.Parent.PlayerHUD).HUD:Unhide()
 
         end)
-    end)
+
+        table.insert(self._FXConnections, conn1)
+        table.insert(self._FXConnections, conn2)
+        table.insert(self._FXConnections, conn3)
+
+    end
+
 end
 
-function Gacha:Open()
+function Gacha:Fire(Cotnainer, t)
 
-   -- self:SetAdornee()
+    self._GUI.Prompt.Visible = false;
 
-    task.spawn(function()
+    Bridge:Fire({
 
-        for i = 1, 5 do
-            
-            local element : Part = self._elements[i]
-            local offset : CFrameValue = element._OFFSET;
+        Request = "Gacha";
+        Action = "Process";
+        Arguments = {
+            Container = Cotnainer;
+            Times = t
+        }
 
-            offset.Value = self._positions[i] * CFrame.fromEulerAnglesXYZ(math.rad(90), math.rad(180), 0)
-
-            local mesh = element.EditableMesh;
-            self:_init_sin_thread(element)
-
-            task.spawn(function()
-                local VERTEX_DATA =  vertex_manipualtion.VerticesData_Class.CreateVerticesData(element, mesh)
-                vertex_manipualtion.VerticesData_Class.AppearFromPoint(VERTEX_DATA, Vector3.new(0, -100, 0), 0.5, 15)
-            end)
-
-            task.wait(0.1)
-
-        end
-    end)
-
-    self:_init_runner_thread()
+    })
 end
 
 function Gacha:Deploy()
+    
+    for _, v in ipairs(CardPacks:GetChildren()) do
 
-    for i = 1, 5 do
+        v.Activator.UIOffset = Vector2.new(100000, 100000)
 
-        local element : Part = game.ReplicatedStorage.UI.Pack;
-	    local newElement = element:Clone()
-	    newElement.Parent = workspace;
+        v.Activator.Triggered:Connect(function()
+            if self._isopening == false then
 
-        self._elements[i] = newElement;    
+                self._GUI.Prompt.Visible = true;
+                self._currentContainer = v.Name;
 
-        local editableMesh = game:GetService("AssetService"):CreateEditableMeshAsync(newElement.MeshId)
-        editableMesh.Parent = newElement;
-        
-        newElement.Name = tostring(i)
-
-    end
-
-    for _, part : Part in ipairs(self._container:GetChildren()) do
-        
-        local Activator : ProximityPrompt = part:FindFirstChild("Activator")
-        Activator.UIOffset = Vector2.new(10000000001, 10000000001)
-
-        Activator.Triggered:Connect(function(playerWhoTriggered)
-            self:Open()
+            end
         end)
 
-        Activator.PromptShown:Connect(function(playerWhoTriggered)
-            Tweenservice:Create(part._R, TweenInfo.new(0.15), {Size = UDim2.new(6, 0, 7, 0)}):Play() 
+        v.Activator.PromptShown:Connect(function(playerWhoTriggered)
+            Tweenservice:Create(v._R, TweenInfo.new(0.15), {Size = UDim2.new(6, 0, 7, 0)}):Play() 
         end)
 
-        Activator.PromptHidden:Connect(function(playerWhoTriggered)
-            Tweenservice:Create(part._R, TweenInfo.new(0.15), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+        v.Activator.PromptHidden:Connect(function(playerWhoTriggered)
+            Tweenservice:Create(v._R, TweenInfo.new(0.15), {Size = UDim2.new(0, 0, 0, 0)}):Play()
         end)
     end
 
-
-    for _, v : ImageButton in ipairs(Playergui.Cards:GetChildren()) do
-
-        local element : Part = self._elements[tonumber(v.Name)]
-        local offset : CFrameValue = element._OFFSET;
-
-        local eulerRotation = CFrame.fromEulerAnglesXYZ(0, math.rad(180), 0)
-
-        self._enterConnections[v.Name] = v.ImageButton.MouseEnter:Connect(function()
-            Tweenservice:Create(offset, TweenInfo.new(.25), {Value = offset.Value * CFrame.new(0, 0.05, 0)}):Play()
-        end)
-
-        self._leaveConnections[v.Name] = v.ImageButton.MouseLeave:Connect(function()
-            Tweenservice:Create(offset, TweenInfo.new(.25), {Value = self._positions[tonumber(v.Name)] * eulerRotation}):Play()
-        end)
-
-        self._activateConnections[v.Name] = v.ImageButton.Activated:Connect(function()
-            self:PlayX5Animation()
+    for _, v in ipairs(self._GUI.Prompt.Amounts:GetChildren()) do
+        v.Activated:Connect(function()
+            print(tonumber(v.Name))
+            self:Fire(self._currentContainer, v.Name)
         end)
     end
+
 end
 
 return Gacha
