@@ -323,6 +323,28 @@ function Fusing:StartFusing()
 end
 
 function Fusing:PlayAnimation(Kwargs)
+
+    local function ShakeCard(Card) 
+        
+        local Currentposition = Card.Position;
+
+        task.spawn(function()
+            
+            local Status = true;
+
+            task.delay(2, function()
+                Status = false
+            end)
+
+            while Status == true do
+                
+                local RandX, RandY = Random.new():NextNumber()
+
+                Tweenservice:Create()
+
+            end
+        end)
+    end
     
     local Item = Kwargs.Item;
     local Result : string = Kwargs.Result;
@@ -381,10 +403,23 @@ function Fusing:PlayAnimation(Kwargs)
 
     end
 
-    _cards[1]:Destroy(); _cards[2]:Destroy()
+    task.wait(0.5)
 
+    _cards[1]:Destroy(); _cards[2]:Destroy()
     local BaseCard = _cards[1];
-    print(BaseCard)
+    
+    Tweenservice:Create(TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+
+    task.wait(0.25);
+
+    Tweenservice:Create(TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+
+    task.wait(0.25)
+
+    Tweenservice:Create(TweenInfo.new(0.25), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
+
+    -- // Make the card shake:
+
     
 
 end
