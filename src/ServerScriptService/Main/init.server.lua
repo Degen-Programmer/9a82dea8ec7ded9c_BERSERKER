@@ -23,6 +23,7 @@ local roundMain = require(script.Rounds)
 local inventory = require(script.Modules.Inventory);
 local Trading = require(script.Modules.Trading);
 local leaderstats = require(script.Leaderstats)
+local gachaMain = require(script.Modules.Gacha)
 
 --// Declareables:
 local mainCommunication: any = net.ReferenceBridge("Main")
@@ -72,6 +73,8 @@ function Load(Player: Player)
 		local Combat = combatMain.Construct(Player, Usable_Data)
 		Combat:Load();
 
+		gachaMain.Update(Player, Usable_Data.Kills)
+
 		return Usable_Data
 	
 	else
@@ -83,6 +86,8 @@ function Load(Player: Player)
 		
 		local Combat = combatMain.Construct(Player, Usable_Data)
 		Combat:Load();
+
+		gachaMain.Update(Player, Usable_Data.Kills)
 
 		HUD:Fire(net.Players({Player}), {
 
