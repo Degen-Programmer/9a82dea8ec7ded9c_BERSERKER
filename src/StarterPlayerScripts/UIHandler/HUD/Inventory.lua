@@ -189,7 +189,7 @@ function Inventory:Load(kwargs : {})
 
 		for ItemName : string, ItemCount : number in pairs(ARRAY) do
 
-			print(ItemCount)
+			print(ItemCount, ItemName)
 			
 			local ItemConfig = ConfigsContainer[ItemName];
 			local NewInstance : ImageButton = Spare:Clone();
@@ -235,7 +235,7 @@ function Inventory:AddItem(Arguments)
 	local Count = Arguments.Count;
 
 	if self.Containers:FindFirstChild(Arguments.Container):FindFirstChild(Item) then
-		self.Containers:FindFirstChild(Arguments.Container):FindFirstChild(Item).ItemCount.Text = tostring(Count)
+		self.Containers:FindFirstChild(Arguments.Container):FindFirstChild(Item).ItemCount.Text = "x"..tostring(Count)
 	else
 
 		print("Item does not exist in the players inventory, creating new entry.")
@@ -256,6 +256,10 @@ function Inventory:AddItem(Arguments)
 		NewInstance.ColorManager.Color = Configs.FrameColor3[ItemConfig.Rarity]
 		NewInstance:FindFirstChild("ItemCount").Text = "x"..tostring(Count)
 		NewInstance.Name = Item;
+
+		NewInstance.Activated:Connect(function(inputObject, clickCount)
+			self:UpdateSelectedItem(Item.Name, ContainerBaseObject.Name)
+		end)
 
 	end
 end
