@@ -377,9 +377,16 @@ function Fusing:PlayAnimation(Kwargs)
     for i = 1, #_cards do
         
         local card : GuiBase2d = _cards[i]
-        Tweenservice:Create(card, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In, 0, false, 0), {Position = UDim2.new(0.533, 0 , 0.421, 0)}):Play()
+        Tweenservice:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In, 0, false, 0), {Position = UDim2.new(0.533, 0 , 0.421, 0)}):Play()
 
     end
+
+    _cards[1]:Destroy(); _cards[2]:Destroy()
+
+    local BaseCard = _cards[1];
+    print(BaseCard)
+    
+
 end
 --{0.585, 0},{0.836, 0}
 return Fusing
