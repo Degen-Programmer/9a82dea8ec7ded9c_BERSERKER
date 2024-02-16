@@ -1,3 +1,4 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Fusing = {}
 Fusing.Sessions = {}
 Fusing.Chances = {
@@ -64,8 +65,6 @@ function Fusing.RewardItem(Player, Reward)
 
     })
 
-    Fusing.ReplicateResult(Player, {SelectedItem = Reward})
-
 end
 
 function Fusing.ProcessRequest(Player, kwargs : {})
@@ -89,12 +88,14 @@ function Fusing.ProcessRequest(Player, kwargs : {})
     print(Item, Rarity)
 
     if Item == "Failure" then
-        Fusing.RewardItem(Player, "WoodenSword")
+        Fusing.RewardItem(Player, kwargs.Item)
+        Fusing.ReplicateResult(Player, {Item = kwargs.Item; BaseItem = kwargs.Item; BaseContainer = kwargs.Container; Result = "Failure";})
         print("Player failed to fuse unto a higher weapon.")
     end
 
     if Item == "Success" then
         Fusing.RewardItem(Player, "Endsword")
+        Fusing.ReplicateResult(Player, {Item = "Endsword"; BaseItem = kwargs.Item; BaseContainer = kwargs.Container; Result = "Success";})
         print("Player fused unto a higher weapon.")
     end
 end
