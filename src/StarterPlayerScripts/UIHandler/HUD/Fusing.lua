@@ -351,7 +351,11 @@ function Fusing:PlayAnimation(Kwargs)
     for i = 1, 3 do
 
         local NewCard = Card:Clone()
-        NewCard.Size = UDim2.new(0, 0, 0)
+        NewCard.Size = UDim2.new(0, 0, 0, 0)
+
+        NewCard.Front.Visible = true;
+        NewCard.Back.Visible = false;
+
         NewCard.Parent = Batch;
         NewCard.Visible = true;
 
@@ -361,10 +365,19 @@ function Fusing:PlayAnimation(Kwargs)
         NewCard.Front.ItemChance.Text =  Config.Chance;
 
         NewCard.Position = Positions[i]
-        Tweenservice:Create(NewCard, TweenInfo.new(.1), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
+        Tweenservice:Create(NewCard, TweenInfo.new(.25), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
 
         table.insert(_cards, NewCard)
-        task.wait(.1)
+        task.wait(.25)
+
+    end
+
+    task.wait(0.1)
+
+    for i = 1, #_cards do
+        
+        local card : GuiBase2d = _cards[i]
+        Tweenservice:Create(card, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.In, 0, false, 0), {Position = UDim2.new(0.533, 0 , 0.421, 0)}):Play()
 
     end
 end
