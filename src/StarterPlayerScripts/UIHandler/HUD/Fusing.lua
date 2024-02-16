@@ -338,9 +338,12 @@ function Fusing:PlayAnimation(Kwargs)
 
             while Status == true do
                 
-                local RandX, RandY = Random.new():NextNumber()
+                local RandX, RandY = Random.new():NextNumber(0.5, 0.6), Random.new():NextNumber(0.3, 0.4);
+                Tweenservice:Create(Card, TweenInfo.new(.1), {Position = UDim2.new(RandX, 0, RandY, 0)}):Play();
 
-                Tweenservice:Create()
+                task.wait(.1)
+
+                Tweenservice:Create(Card, TweenInfo.new(.1), {Position = Currentposition}):Play();
 
             end
         end)
@@ -423,7 +426,9 @@ function Fusing:PlayAnimation(Kwargs)
 
     -- // Make the card shake:
 
+    task.wait(0.2)
 
+    ShakeCard(BaseCard)
 
 end
 --{0.585, 0},{0.836, 0}
