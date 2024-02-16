@@ -408,19 +408,19 @@ function Fusing:PlayAnimation(Kwargs)
     _cards[1]:Destroy(); _cards[2]:Destroy()
     local BaseCard = _cards[1];
     
-    Tweenservice:Create(TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
 
     task.wait(0.25);
 
-    Tweenservice:Create(TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
 
     task.wait(0.25)
 
-    Tweenservice:Create(TweenInfo.new(0.25), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
 
     -- // Make the card shake:
 
-    
+
 
 end
 --{0.585, 0},{0.836, 0}
