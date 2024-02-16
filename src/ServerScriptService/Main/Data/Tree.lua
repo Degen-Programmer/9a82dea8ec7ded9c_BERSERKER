@@ -1,7 +1,7 @@
 return {
 
 	Wins = 0;
-	Kills = 0;
+	Kills = 10000;
 
 	Weapon = "DraconicRapier";
 	Ability = "Dash";
