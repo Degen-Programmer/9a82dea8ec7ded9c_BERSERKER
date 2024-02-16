@@ -339,11 +339,11 @@ function Fusing:PlayAnimation(Kwargs)
             while Status == true do
                 
                 local RandX, RandY = Random.new():NextNumber(0.5, 0.6), Random.new():NextNumber(0.3, 0.4);
-                Tweenservice:Create(Card, TweenInfo.new(.1), {Position = UDim2.new(RandX, 0, RandY, 0)}):Play();
+                Tweenservice:Create(Card, TweenInfo.new(.05), {Position = UDim2.new(RandX, 0, RandY, 0)}):Play();
 
-                task.wait(.1)
+                task.wait(.05)
 
-                Tweenservice:Create(Card, TweenInfo.new(.1), {Position = Currentposition}):Play();
+                Tweenservice:Create(Card, TweenInfo.new(.05), {Position = Currentposition}):Play();
 
             end
         end)
@@ -429,6 +429,26 @@ function Fusing:PlayAnimation(Kwargs)
     task.wait(0.2)
 
     ShakeCard(BaseCard)
+
+    task.wait(2)
+
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+
+    task.wait(0.25);
+
+    BaseCard.Front.Visible = true;
+    BaseCard.Back.Visible = false;
+
+    local ItemConfig = Configs[BaseContainer][Item];
+    
+    BaseCard.Front.ItemChance.Text = ItemConfig.Chance;
+    BaseCard.Front.ItemName.Text = ItemConfig.DisplayName;
+    BaseCard.Front.ItemRarity.Text = ItemConfig.Rarity;
+    BaseCard.Front.Icon.Image = ItemConfig.Icon; 
+
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+
+    print(Result)
 
 end
 --{0.585, 0},{0.836, 0}
