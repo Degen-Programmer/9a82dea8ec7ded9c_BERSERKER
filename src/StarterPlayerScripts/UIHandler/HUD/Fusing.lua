@@ -129,7 +129,9 @@ function Fusing:Deploy()
 end
 
 function Fusing:Parse(Action, kwargs)
-    
+    if Action == "PlayAnimation" then
+        self.PlayAnimation(kwargs)
+    end
 end
 
 function Fusing:PostRequest()
@@ -318,6 +320,48 @@ function Fusing:StartFusing()
             })
         end
     end)
+end
+
+function Fusing:PlayAnimation(Kwargs)
+    
+    local Item = Kwargs.Item;
+    local Result : string = Kwargs.Result;
+    local BaseItem = Kwargs.BaseItem;
+    local BaseContainer = Kwargs.BaseContainer;
+
+    require(script.Parent.PlayerHUD).HUD.Elemnts.Inventory:Close()
+
+    -- // Create cards:
+
+    local GachaFrame = Playergui.Root.Gacha;
+    local Batch : Folder = GachaFrame.Batch;
+    local Card : Frame = GachaFrame.Card;
+
+    local Positions = {
+        
+        UDim2.new(-0.117543034,0, 0.411139637, 0);
+        UDim2.new(0.524952769, 0, 0.411139637, 0);
+        UDim2.new(1.17082119, 0, 0.411139637, 0);
+
+    }
+
+    local _cards = {}
+    local Config = Configs[BaseContainer][BaseItem]
+
+    for i = 1, 3 do
+
+        local NewCard = Card:Clone()
+        NewCard.Parent = Batch;
+        NewCard.Visible = true;
+
+        NewCard.Front.Icon.Image = Config.Icon;
+        NewCard.Front.ItemName.Text = Config.DisplayName;
+        NewCard.Front.ItemRarity.Text = Config.Rarity;
+        NewCard.Front.ItemChance.Text =  Config.Chance;
+
+        table.insert(NewCard, _cards)
+
+    end
 end
 
 return Fusing
