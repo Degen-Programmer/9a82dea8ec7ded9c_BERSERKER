@@ -20,7 +20,7 @@ function DeployHUD()
         "Trading",
         "Spinwheel",
         "Fusing",
-
+        "Gacha",
     })
 
     hd.CurrentHud = HBJ;
