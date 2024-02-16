@@ -242,25 +242,22 @@ function Fusing:AddItem(Item : string)
     local ContainerBaseObject : ScrollingFrame = self._GUI.Container
 	local ConfigsContainer : {} = Configs[Item.Parent.Name]
 	local Spare : ImageButton = ContainerBaseObject.Spare;
-		
+    
 	local ItemConfig = ConfigsContainer[Item.Name];
 	local NewInstance : ImageButton = Spare:Clone();
 	NewInstance.Parent = ContainerBaseObject;
 	NewInstance.Visible = true;
 	NewInstance:FindFirstChild("Icon").Image = ItemConfig.Icon;
 	NewInstance:FindFirstChild("itemName").Text = ItemConfig.DisplayName;
-	
+    
 	NewInstance.Image = Configs.IconFrameAsset_ID[ItemConfig.Rarity]
 	NewInstance.ColorManager.Color = Configs.FrameColor3[ItemConfig.Rarity]
 	NewInstance:FindFirstChild("ItemCount").Text = "x"..tostring(1)
 	NewInstance.Name = Item.Name;
     
     -- Update the count of the item:
-
     Item.ItemCount.Text = "x"..tostring(self:_getCount(Item) - 1)
-
     -- Create the listener event:
-
     self._removerConnections[NewInstance.Name] = NewInstance.Activated:Connect(function()
         self:RemoveItem(NewInstance, Item)
     end)
@@ -324,6 +321,8 @@ end
 
 function Fusing:PlayAnimation(Kwargs)
 
+    local _HUD = require(script.Parent.PlayerHUD).HUD
+
     local function ShakeCard(Card) 
         
         local Currentposition = Card.Position;
@@ -354,7 +353,7 @@ function Fusing:PlayAnimation(Kwargs)
     local BaseItem = Kwargs.BaseItem;
     local BaseContainer = Kwargs.BaseContainer;
 
-    require(script.Parent.PlayerHUD).HUD.Elements.Inventory:Close()
+    _HUD.Elements.Inventory:Close()
 
     -- // Create cards:
 
@@ -427,11 +426,9 @@ function Fusing:PlayAnimation(Kwargs)
     -- // Make the card shake:
 
     task.wait(0.2)
-
     ShakeCard(BaseCard)
 
     task.wait(2)
-
     Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
 
     task.wait(0.25);
@@ -448,7 +445,14 @@ function Fusing:PlayAnimation(Kwargs)
 
     Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
 
-    print(Result)
+    task.wait(1)
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+
+    task.wait(0.25)
+
+    BaseCard:Destroy()
+    _HUD.Elements.Inventory:Open()
+    _HUD:Unhide()
 
 end
 --{0.585, 0},{0.836, 0}
