@@ -130,7 +130,7 @@ end
 
 function Fusing:Parse(Action, kwargs)
     if Action == "PlayAnimation" then
-        self.PlayAnimation(kwargs)
+        self:PlayAnimation(kwargs)
     end
 end
 
@@ -329,7 +329,7 @@ function Fusing:PlayAnimation(Kwargs)
     local BaseItem = Kwargs.BaseItem;
     local BaseContainer = Kwargs.BaseContainer;
 
-    require(script.Parent.PlayerHUD).HUD.Elemnts.Inventory:Close()
+    require(script.Parent.PlayerHUD).HUD.Elements.Inventory:Close()
 
     -- // Create cards:
 
