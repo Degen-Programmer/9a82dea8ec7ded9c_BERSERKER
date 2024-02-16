@@ -406,9 +406,12 @@ function Fusing:PlayAnimation(Kwargs)
     task.wait(0.5)
 
     _cards[1]:Destroy(); _cards[2]:Destroy()
-    local BaseCard = _cards[1];
+    local BaseCard = Batch:GetChildren()[1]
+    print(BaseCard)
     
     Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    BaseCard.Front.Visible = false;
+    BaseCard.Back.Visible = true;
 
     task.wait(0.25);
 
