@@ -97,6 +97,8 @@ function Fusing.New() : FUSING
 
     }
 
+    self._isOpened = false;
+
 	return setmetatable(self, Fusing)
 	
 end
@@ -107,11 +109,18 @@ function Fusing:Deploy()
 
     INVENTORY_FRAME.Tabs.Fuse.Activated:Connect(function()
 
+        if self._isOpened then return end
+
+        self._isOpened = true;
         self:StartFusing()
+        
         require(script.Parent.PlayerHUD).HUD:Hide()
 
     end)
+
     INVENTORY_FRAME.Close.Activated:Connect(function()
+
+        self._isOpened = false;
         
         self:Close()
         self:Reset()
@@ -120,6 +129,8 @@ function Fusing:Deploy()
     end)
 
     self._GUI.Cancel.Activated:Connect(function(inputObject, clickCount)
+        
+        self._isOpened = false;
         
         self:Close()
         self:Reset()
@@ -195,6 +206,7 @@ function Fusing:Reset()
     self._fusingTBL.BaseCount = 0;
     self._fusingTBL.BaseItem = nil;
     self._fusingTBL.BaseContainer = nil;
+    self._activateConnection:Disconnect()
 
 end
 
@@ -242,22 +254,25 @@ function Fusing:AddItem(Item : string)
     local ContainerBaseObject : ScrollingFrame = self._GUI.Container
 	local ConfigsContainer : {} = Configs[Item.Parent.Name]
 	local Spare : ImageButton = ContainerBaseObject.Spare;
-    
+		
 	local ItemConfig = ConfigsContainer[Item.Name];
 	local NewInstance : ImageButton = Spare:Clone();
 	NewInstance.Parent = ContainerBaseObject;
 	NewInstance.Visible = true;
 	NewInstance:FindFirstChild("Icon").Image = ItemConfig.Icon;
 	NewInstance:FindFirstChild("itemName").Text = ItemConfig.DisplayName;
-    
+	
 	NewInstance.Image = Configs.IconFrameAsset_ID[ItemConfig.Rarity]
 	NewInstance.ColorManager.Color = Configs.FrameColor3[ItemConfig.Rarity]
 	NewInstance:FindFirstChild("ItemCount").Text = "x"..tostring(1)
 	NewInstance.Name = Item.Name;
     
     -- Update the count of the item:
+
     Item.ItemCount.Text = "x"..tostring(self:_getCount(Item) - 1)
+
     -- Create the listener event:
+
     self._removerConnections[NewInstance.Name] = NewInstance.Activated:Connect(function()
         self:RemoveItem(NewInstance, Item)
     end)
@@ -274,6 +289,7 @@ function Fusing:RemoveItem(Item, BaseItem)
         
         print("Item removing . . . ")
         self:Reset();
+        self:StartFusing()
 
     end
 end
@@ -282,6 +298,7 @@ function Fusing:StartFusing()
     
     self:Open()
     self._clickConnections = {}
+    self._activateConnection = nil;
 
     for _, Containers : ScrollingFrame in ipairs(INVENTORY_FRAME.Containers:GetChildren()) do
         for _, Item : ImageButton in ipairs(Containers:GetChildren()) do
@@ -294,7 +311,7 @@ function Fusing:StartFusing()
         end
     end
 
-    self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
+    self._activateConnection = self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
         if self:_getLen() == 3 then
             
             local BaseContainer = self._fusingTBL.BaseContainer.Name
