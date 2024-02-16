@@ -36,7 +36,13 @@ function Inventory.AddItem(Player : Player, Kwargs : {})
         ItemContainer[Kwargs.Item] = Kwargs.ItemCount;
     end
 
-    print(ItemStack,  ItemContainer[Kwargs.Item])
+    local count = nil;
+
+    if ItemStack == nil then 
+        count = ItemContainer[Kwargs.Item]
+    else
+        count = ItemStack;
+    end
 
     HUD:Fire(net.Players({Player}), {
 
@@ -45,7 +51,7 @@ function Inventory.AddItem(Player : Player, Kwargs : {})
         Arguments = {
 
             Item = Kwargs.Item;
-            Count =   ItemStack;
+            Count = count;
             Container = Kwargs.Container;
 
         }
