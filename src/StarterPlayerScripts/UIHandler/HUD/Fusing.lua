@@ -97,6 +97,8 @@ function Fusing.New() : FUSING
 
     }
 
+    self._isOpened = false;
+
 	return setmetatable(self, Fusing)
 	
 end
@@ -107,11 +109,18 @@ function Fusing:Deploy()
 
     INVENTORY_FRAME.Tabs.Fuse.Activated:Connect(function()
 
+        if self._isOpened then return end
+
+        self._isOpened = true;
         self:StartFusing()
+        
         require(script.Parent.PlayerHUD).HUD:Hide()
 
     end)
+
     INVENTORY_FRAME.Close.Activated:Connect(function()
+
+        self._isOpened = false;
         
         self:Close()
         self:Reset()
@@ -121,6 +130,8 @@ function Fusing:Deploy()
 
     self._GUI.Cancel.Activated:Connect(function(inputObject, clickCount)
         
+        self._isOpened = false;
+        
         self:Close()
         self:Reset()
         require(script.Parent.PlayerHUD).HUD:Unhide()
@@ -129,7 +140,9 @@ function Fusing:Deploy()
 end
 
 function Fusing:Parse(Action, kwargs)
-    
+    if Action == "PlayAnimation" then
+        self:PlayAnimation(kwargs)
+    end
 end
 
 function Fusing:PostRequest()
@@ -193,6 +206,7 @@ function Fusing:Reset()
     self._fusingTBL.BaseCount = 0;
     self._fusingTBL.BaseItem = nil;
     self._fusingTBL.BaseContainer = nil;
+    self._activateConnection:Disconnect()
 
 end
 
@@ -275,6 +289,7 @@ function Fusing:RemoveItem(Item, BaseItem)
         
         print("Item removing . . . ")
         self:Reset();
+        self:StartFusing()
 
     end
 end
@@ -283,6 +298,7 @@ function Fusing:StartFusing()
     
     self:Open()
     self._clickConnections = {}
+    self._activateConnection = nil;
 
     for _, Containers : ScrollingFrame in ipairs(INVENTORY_FRAME.Containers:GetChildren()) do
         for _, Item : ImageButton in ipairs(Containers:GetChildren()) do
@@ -295,7 +311,7 @@ function Fusing:StartFusing()
         end
     end
 
-    self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
+    self._activateConnection = self._GUI.Fuse.Activated:Connect(function(inputObject, clickCount)
         if self:_getLen() == 3 then
             
             local BaseContainer = self._fusingTBL.BaseContainer.Name
@@ -320,4 +336,141 @@ function Fusing:StartFusing()
     end)
 end
 
+function Fusing:PlayAnimation(Kwargs)
+
+    local _HUD = require(script.Parent.PlayerHUD).HUD
+
+    local function ShakeCard(Card) 
+        
+        local Currentposition = Card.Position;
+
+        task.spawn(function()
+            
+            local Status = true;
+
+            task.delay(2, function()
+                Status = false
+            end)
+
+            while Status == true do
+                
+                local RandX, RandY = Random.new():NextNumber(0.5, 0.6), Random.new():NextNumber(0.3, 0.4);
+                Tweenservice:Create(Card, TweenInfo.new(.05), {Position = UDim2.new(RandX, 0, RandY, 0)}):Play();
+
+                task.wait(.05)
+
+                Tweenservice:Create(Card, TweenInfo.new(.05), {Position = Currentposition}):Play();
+
+            end
+        end)
+    end
+    
+    local Item = Kwargs.Item;
+    local Result : string = Kwargs.Result;
+    local BaseItem = Kwargs.BaseItem;
+    local BaseContainer = Kwargs.BaseContainer;
+
+    _HUD.Elements.Inventory:Close()
+
+    -- // Create cards:
+
+    local GachaFrame = Playergui.Root.Gacha;
+    local Batch : Folder = GachaFrame.Batch;
+    local Card : Frame = GachaFrame.Card;
+
+    local Positions = {
+        
+        UDim2.new(-0.117543034,0, 0.411139637, 0);
+        UDim2.new(0.524952769, 0, 0.411139637, 0);
+        UDim2.new(1.17082119, 0, 0.411139637, 0);
+
+    }
+
+    local _cards = {}
+    local Config = Configs[BaseContainer][BaseItem]
+
+    for i = 1, 3 do
+
+        local NewCard = Card:Clone()
+        NewCard.Size = UDim2.new(0, 0, 0, 0)
+
+        NewCard.Front.Visible = true;
+        NewCard.Back.Visible = false;
+
+        NewCard.Parent = Batch;
+        NewCard.Visible = true;
+
+        NewCard.Front.Icon.Image = Config.Icon;
+        NewCard.Front.ItemName.Text = Config.DisplayName;
+        NewCard.Front.ItemRarity.Text = Config.Rarity;
+        NewCard.Front.ItemChance.Text =  Config.Chance;
+
+        NewCard.Position = Positions[i]
+        Tweenservice:Create(NewCard, TweenInfo.new(.25), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
+
+        table.insert(_cards, NewCard)
+        task.wait(.25)
+
+    end
+
+    task.wait(0.1)
+
+    for i = 1, #_cards do
+        
+        local card : GuiBase2d = _cards[i]
+        Tweenservice:Create(card, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In, 0, false, 0), {Position = UDim2.new(0.533, 0 , 0.421, 0)}):Play()
+
+    end
+
+    task.wait(0.5)
+
+    _cards[1]:Destroy(); _cards[2]:Destroy()
+    local BaseCard = Batch:GetChildren()[1]
+    print(BaseCard)
+    
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    BaseCard.Front.Visible = false;
+    BaseCard.Back.Visible = true;
+
+    task.wait(0.25);
+
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+
+    task.wait(0.25)
+
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.558, 0,0.798, 0)}):Play()
+
+    -- // Make the card shake:
+
+    task.wait(0.2)
+    ShakeCard(BaseCard)
+
+    task.wait(2)
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+
+    task.wait(0.25);
+
+    BaseCard.Front.Visible = true;
+    BaseCard.Back.Visible = false;
+
+    local ItemConfig = Configs[BaseContainer][Item];
+    
+    BaseCard.Front.ItemChance.Text = ItemConfig.Chance;
+    BaseCard.Front.ItemName.Text = ItemConfig.DisplayName;
+    BaseCard.Front.ItemRarity.Text = ItemConfig.Rarity;
+    BaseCard.Front.Icon.Image = ItemConfig.Icon; 
+
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+
+    task.wait(1)
+    Tweenservice:Create(BaseCard, TweenInfo.new(0.25), {Size = UDim2.new(0.585, 0, 0.836, 0)}):Play()
+
+    task.wait(0.25)
+
+    BaseCard:Destroy()
+    _HUD.Elements.Inventory:Open()
+    _HUD:Unhide()
+
+end
+--{0.585, 0},{0.836, 0}
 return Fusing

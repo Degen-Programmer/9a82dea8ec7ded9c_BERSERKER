@@ -21,7 +21,7 @@ function DataManager.Construct(player: Player)
 	 
 	local DataObject = {} 
 	local ProfileStore = ProfileService.GetProfileStore( 
-		"<1>x!!.!x!<!!!!g!x1!!!>..", 
+		"<1>x!!.!x!!<!!!!g!x1!!!>..", 
 		require(script.Tree) 
 	) 
 	 

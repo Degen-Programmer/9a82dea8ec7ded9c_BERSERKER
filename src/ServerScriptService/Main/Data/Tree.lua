@@ -37,8 +37,8 @@ return {
 
 		Weapons = {
 
-			["DraconicRapier"] = 100;
-			["WoodenSword"] = 500;
+			["DraconicRapier"] = 69;
+			["WoodenSword"] = 69;
 
 		};
 
